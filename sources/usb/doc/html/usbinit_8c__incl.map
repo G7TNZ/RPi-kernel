@@ -1,0 +1,5 @@
+base referer
+rect $type_8h.html 404,56 463,83
+rect $usbdebug_8h-source.html 127,56 217,83
+rect $usbapi_8h.html 136,107 208,134
+rect $usbstruct_8h-source.html 267,107 355,134

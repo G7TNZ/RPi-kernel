@@ -1,0 +1,28 @@
+# Composite
+# Set stdv mode to PAL
+sdtv_mode=2
+# Composite aspect 4:3
+sdtv_aspect=1
+# No colour burst.
+sdtv_disable_colourburst=1
+
+# HDMI
+# Send sound if supported and enabled
+hdmi_drive=2
+# DMT
+hdmi_group=2
+# Resolution to 640 x 480 60Hz
+hdmi_mode=4
+# depth
+framebuffer_depth=24
+
+# enable an image on boot
+test_mode=1
+
+# Boot options
+#disable_commandline_tags=1
+disable_overscan=1
+disable_l2cache=0
+kernel=mjw_kernel.img
+kernel_address=0x8000
+

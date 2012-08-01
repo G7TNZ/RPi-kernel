@@ -1,0 +1,65 @@
+This is a collection of Ethernet routines supporting the SBC-3.
+
+You will need to install CC65 along with the SBC-3 support files in order to
+compile this program.  I used the Windows/DOS version and use the included 
+make.exe in DOS or Windows to compile.  The object file is named 'enet'.
+
+The hardware used is an ENC28J60 Module with 3.3v to 5 volt level converters 
+on the board.  It uses an SPI interface to the  SBC-3 and is currently coded 
+for port 3.  This is easily changed in the enceth.s file.
+
+I do have working RTL8019AS drivers as well - so if you already have a device
+with that chip, contact me and I can help you get it installed.
+
+You will need to edit the main.c file to insert the IP addresses of your SBC-3, 
+default gateway, subnet mask, and smtp email server.  
+
+The TCP/IP code is v0.9 of Adam Dunkel's uIP (Micro IP) suite.  I have left 
+the core uIP code unchanged.  I have included three applications from the 
+suite as well: httpd, smtp, and telnetd.
+
+httpd is a simple web server.  I have modified this to use the SBC-3 Compact 
+Flash file system instead of the uIP read-only file system.  All files in the 
+/web folder are visible to httpd.  Sub-folder are allowed.  There is a simple
+cgi script interpreter that allows system data to be presented on a web page.
+I have added one that returns the current date and time from the SBC-3 Real 
+Time Clock.  All files (except the .txt files) will require you to insert a small
+header at the beginning to provide the required web browser responses.
+
+For html files, use this:
+HTTP/1.0 200 OK
+Server: SBC-3 (http://sbc.rictor.org/)
+Content-type: text/html
+
+(there must be blank line between this and the <html> start of the web page data.
+
+For all other files, use this:
+HTTP/1.0 200 OK
+Server: SBC-3 (http://sbc.rictor.org/)
+Content-type: text/plain
+
+The simplest way to append this to a non-text file (jpg, gif) is to use the DOS
+copy command to append two files together.  Create the header and save as h.txt.
+Now, from DOS, type "copy /b h.txt+source.jpg target.jpg" where /b means binary 
+mode and source.jpg is the original file and target.jpg will be the resulting file.
+
+
+smtp is a simple email sending client. You can add user-defined triggers to
+initial sending an email.  If your cell phone supports email or text via email,
+you can receive alerts or messages from the SBC-3 based on the triggers. I have programmed
+a keypress of 'm' to trigger a message - you will need to edit the smtp_send parameters
+in main.c to suite your setup.
+
+telnetd is a simple telnet server.  It is configured to provide the uIP statistics
+but more commands can be added easily.  I have noticed that using telnetd and 
+httpd at the same time sometimes causes the system to get confused.  I have not 
+researched this further - be aware of it if you plan to use both apps.
+
+The enceth.s file is the driver for the ENC28J60.  I have read taken examples from
+several C sources to create this file.  It seems to work well.  However, I have 
+noticed on occasion that when restarting the program, the chip does not respond, 
+sometimes requiring a power-cycle to get things going again.  
+
+Enjoy!
+
+Daryl

@@ -1,0 +1,8 @@
+.svn
+*.o
+*.elf
+*.img
+*.bin
+*.hex
+*.list
+
