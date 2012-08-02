@@ -1,4 +1,4 @@
-.svn
+.svn/
 *.o
 *.elf
 *.img
@@ -6,4 +6,4 @@
 *.hex
 *.list
 *.broadcom
-
+*~
