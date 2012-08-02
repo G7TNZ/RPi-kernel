@@ -160,6 +160,13 @@ struct Cursor Fb_GetCursorPosition(struct Cursor cursor) {
 	return cursor;
 }
 
+void Fb_WriteString(const char * putString) {
+	int index = 0;
+	while (0 != putString[index]) {
+		Fb_WriteCharacter(putString[index++]);
+	}
+}
+
 void Fb_WriteCharacter(unsigned char putCharacter) {
 	switch (putCharacter) {
 		case 0x00:

@@ -38,14 +38,8 @@ int start_kernel(void) {
 	colour.blue		= 0x30;
 	Fb_SetForegroundColour(colour);
 
-	for (int j = 0; j <= 17; j++) {
-		unsigned char writeCharacter = '!';
-		for (int i = 0; i < 0xE0; i++) {
-			if(i == 0x7F) continue;
-			Fb_WriteCharacter(writeCharacter++);
-			if((j == 17) && (i >= 7)) break;
-		}
-	}
+	char putString[] = "Hello World!\n\r:)";
+	Fb_WriteString(putString);
 
 	Gpio_SetMorse(1, false);
 	while(1) {

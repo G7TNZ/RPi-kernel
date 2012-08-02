@@ -16,6 +16,7 @@ void Fb_ClearScreen(void);
 void Fb_SetForegroundColour(struct ColourStructure colour);
 void Fb_SetBackgroundColour(struct ColourStructure colour);
 void Fb_WriteCharacter(unsigned char putCharacter);
+void Fb_WriteString(const char * putString);
 void Fb_SetCursorPosition(int x_position, int y_position);
 struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
 
