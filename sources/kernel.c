@@ -15,7 +15,7 @@
 int start_kernel(void) {
 	
 	Gpio_SetMorse(36, true);
-	Gpio_DotDelay();
+	Gpio_WordSpace();
 	
 	Gpio_SetPinDirection(RPI_STATUS, OUTPUT);
 	SmallDelay(5);
@@ -23,7 +23,9 @@ int start_kernel(void) {
 	Gpio_DashDelay();
 	
 	int result;
-	result = InitFb();
+	do {
+		result = InitFb();
+	} while(0 != result);
 
 	Fb_ClearScreen();
 	struct ColourStructure colour;
@@ -49,7 +51,6 @@ int start_kernel(void) {
 	while(1) {
 		Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
 		Fb_WriteCharacter('V');
-
 	}
 
 	return 0;
