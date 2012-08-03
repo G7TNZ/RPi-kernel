@@ -26,8 +26,9 @@ int start_kernel(void) {
 	Gpio_DashDelay();
 	
 	int result;
+	int mode = MODE1024X768X24;
 	do {
-		result = InitFb();
+		result = InitFb(mode);
 	} while(0 != result);
 
 	Fb_ClearScreen();
@@ -47,7 +48,7 @@ int start_kernel(void) {
 	Cn_WriteMemoryBlockHex(0, 0x50);					// Vector block
 	Fb_WriteString("\n\r\n\rReady> show 100 21F\n\r");
 	Cn_WriteMemoryBlockHex(0x100, 0x21F);			// Atag block
-	Fb_WriteString("\n\r\n\rReady> print atags\n\r\n\r");
+	Fb_WriteString("\n\r\n\rReady> print cmdline\n\r\n\r");
 	char* atags = (char*) 0x12C;
 	WriteTags(atags);													// Atag as character list
 	Fb_WriteString("\n\rFinished.\n\r\n\rReady> ");

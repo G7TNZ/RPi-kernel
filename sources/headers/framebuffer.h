@@ -12,7 +12,7 @@
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 10
 
-int	InitFb(void);
+int	InitFb(int);
 void Fb_ClearScreen(void);
 void Fb_SetForegroundColour(struct ColourStructure colour);
 void Fb_SetBackgroundColour(struct ColourStructure colour);
@@ -20,6 +20,18 @@ void Fb_SetCursorPosition(int x_position, int y_position);
 void Fb_WriteCharacter(unsigned char putCharacter);
 void Fb_WriteString(const char * putString);
 struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
+
+enum FB_MODE {
+	MODE640X480X16,
+	MODE640X480X24,
+	MODE640X480X32,
+	MODE1024X768X16,
+	MODE1024X768X24,
+	MODE1024X768X32,
+	MODE1280X1024X16,
+	MODE1280X1024X24,
+	MODE1280X1024X32
+};
 
 #endif
 

@@ -58,16 +58,61 @@ void CheckPosition(void);
 void ClearBottomLineToBackground(void);
 
 // Public functions
-int InitFb() {
+int InitFb(int mode) {
 	// framebuffer structure located where lower 4 bits are zero.
 	volatile struct FrameBuffer* frameBuffer = (volatile struct FrameBuffer*) &MemorySpace;
+	switch (mode) {
+		default:
+		case MODE640X480X16:
+			frameBuffer->width	= 640;
+			frameBuffer->height = 480;
+			frameBuffer->depth	= 16;
+			break;
+		case MODE640X480X24:
+			frameBuffer->width	= 640;
+			frameBuffer->height = 480;
+			frameBuffer->depth	= 24;
+			break;
+		case MODE640X480X32:
+			frameBuffer->width	= 640;
+			frameBuffer->height = 480;
+			frameBuffer->depth	= 32;
+			break;
+		case MODE1024X768X16:
+			frameBuffer->width	= 1024;
+			frameBuffer->height = 768;
+			frameBuffer->depth	= 16;
+			break;
+		case MODE1024X768X24:
+			frameBuffer->width	= 1024;
+			frameBuffer->height = 768;
+			frameBuffer->depth	= 24;
+			break;
+		case MODE1024X768X32:
+			frameBuffer->width	= 1024;
+			frameBuffer->height = 768;
+			frameBuffer->depth	= 32;
+			break;
+		case MODE1280X1024X16:
+			frameBuffer->width	= 1280;
+			frameBuffer->height = 1024;
+			frameBuffer->depth	= 16;
+			break;
+		case MODE1280X1024X24:
+			frameBuffer->width	= 1280;
+			frameBuffer->height = 1024;
+			frameBuffer->depth	= 24;
+			break;
+		case MODE1280X1024X32:
+			frameBuffer->width	= 1280;
+			frameBuffer->height = 1024;
+			frameBuffer->depth	= 32;
+			break;
+	}
 	
-	frameBuffer->width = 640;
-	frameBuffer->height = 480;
 	frameBuffer->virtual_width = frameBuffer->width;
 	frameBuffer->virtual_height = frameBuffer->height;
 	frameBuffer->pitch = 0;
-	frameBuffer->depth = 24;
 	frameBuffer->x = 0;
 	frameBuffer->y = 0;
 	frameBuffer->pointer = 0;
