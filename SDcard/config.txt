@@ -17,10 +17,10 @@ hdmi_mode=4
 framebuffer_depth=24
 
 # enable an image on boot
-test_mode=1
+# test_mode=1
 
 # Boot options
-#disable_commandline_tags=1
+# disable_commandline_tags=1
 disable_overscan=1
 disable_l2cache=0
 kernel=mjw_kernel.img

@@ -38,13 +38,27 @@ int start_kernel(void) {
 	colour.blue		= 0x30;
 	Fb_SetForegroundColour(colour);
 
-	char putString[] = "Hello World!\n\r:)";
+	char putString[] = "Hello World!\n\rReady> ";
 	Fb_WriteString(putString);
-
+	char* atags = (char*) 0x12A;
+	//int index = 0;
+	char convertedNumber[9];
+	for (int index = 0; index < 0xD0; index++) {
+		Gpio_ConvertToHexString((int) atags[index], convertedNumber);
+		Fb_WriteString(convertedNumber);
+		Fb_WriteCharacter(' ');
+	}
+	
+	Fb_WriteString("\n\r");
+	for (int index = 0; index < 0xD0; index++) {
+			Fb_WriteCharacter(atags[index]);
+			if(' ' == atags[index]) Fb_WriteString("\n\r");
+	}
+	Fb_WriteString("\n\rFinished.");
+	
 	Gpio_SetMorse(1, false);
 	while(1) {
 		Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
-		Fb_WriteCharacter('V');
 	}
 
 	return 0;

@@ -84,7 +84,7 @@ int InitFb() {
 	frameBufferInfo->depth = frameBuffer->depth / 8;
 	frameBufferInfo->framebuffer = (volatile unsigned char *) VcMemoryToArmPhysicalL2(frameBuffer->pointer);
 	frameBufferInfo->size = frameBuffer->size;
-	frameBufferInfo->cursor_x = frameBufferInfo->depth;
+	frameBufferInfo->cursor_x = 0;
 	frameBufferInfo->cursor_y = 2;
 	StandardFontInitialise();
 	frameBufferInfo->fontArrays[0] = (struct FontStructure) standardFont;
@@ -133,8 +133,8 @@ void Fb_ClearScreen(void) {
 				break;
 		}
 	}
-	frameBufferInfo->cursor_x = frameBufferInfo->depth;
-	frameBufferInfo->cursor_y = 1;
+	frameBufferInfo->cursor_x = 0;
+	frameBufferInfo->cursor_y = 2;
 }
 
 void Fb_SetBackgroundColour(struct ColourStructure colour) {
@@ -207,18 +207,18 @@ void Fb_WriteCharacter(unsigned char putCharacter) {
 		case 0x0B:	// Vertical tab
 			break;
 		case 0x0D:	// Line return
-			frameBufferInfo->cursor_x = 1;
+			frameBufferInfo->cursor_x = 0;
 			break;
 		case 0x1B:	// Escape
 			break;
 		case 0x7F:	// Delete
-			frameBufferInfo->cursor_x -= (((frameBufferInfo->fontArrays[currentFont]).width + 1) * frameBufferInfo->depth);
+			frameBufferInfo->cursor_x -= (((frameBufferInfo->fontArrays[currentFont]).width) * frameBufferInfo->depth);
 			WriteCharacter(putCharacter);
 			break;
 		default:
 			if (putCharacter <= (frameBufferInfo->fontArrays[currentFont]).end) {
 				WriteCharacter(putCharacter);
-				frameBufferInfo->cursor_x += (((frameBufferInfo->fontArrays[currentFont]).width + 1) * frameBufferInfo->depth);
+				frameBufferInfo->cursor_x += (((frameBufferInfo->fontArrays[currentFont]).width) * frameBufferInfo->depth);
 				CheckPosition();
 			}
 	}
@@ -232,6 +232,7 @@ void WriteCharacter(unsigned char putCharacter) {
 	uint32_t rowPattern;
 	int position = 0;
 	int base_position = (frameBufferInfo->cursor_y * frameBufferInfo->pitch) + frameBufferInfo->cursor_x ; 
+	DataSynchronisationBarrier();
 	for (int row = 0; row < frameBufferInfo->fontArrays[currentFont].height; row++) {
 		rowPattern = frameBufferInfo->fontArrays[currentFont]
 									.map[((putCharacter - ((frameBufferInfo->fontArrays[currentFont]).start))
@@ -240,7 +241,7 @@ void WriteCharacter(unsigned char putCharacter) {
 		WriteCharacterRow(position, rowPattern, (frameBufferInfo->fontArrays[currentFont]).width);
 	}
 	position = base_position + ((frameBufferInfo->fontArrays[currentFont].height) * frameBufferInfo->pitch);
-	for (int i = 0; i <= (frameBufferInfo->fontArrays[currentFont]).width; i++) {
+	for (int i = 0; i </*=*/ (frameBufferInfo->fontArrays[currentFont]).width; i++) {
 		frameBufferInfo->framebuffer[position++] = currentBackgroundColour.red; // Inter-row pixels
 		frameBufferInfo->framebuffer[position++] = currentBackgroundColour.green;
 		frameBufferInfo->framebuffer[position++] = currentBackgroundColour.blue;	
@@ -249,7 +250,7 @@ void WriteCharacter(unsigned char putCharacter) {
 
 void CheckPosition(void) {
 	if (frameBufferInfo->cursor_x > (frameBufferInfo->pitch - (frameBufferInfo->fontArrays[currentFont]).width - 1)) {
-		frameBufferInfo->cursor_x = frameBufferInfo->depth;
+		frameBufferInfo->cursor_x = 0;
 		frameBufferInfo->cursor_y += ((frameBufferInfo->fontArrays[currentFont]).height) + 1;
 	}
 	if (frameBufferInfo->cursor_y >= (frameBufferInfo->size / frameBufferInfo->pitch) - ((frameBufferInfo->fontArrays[currentFont]).height + 2) ) {
@@ -257,7 +258,7 @@ void CheckPosition(void) {
 		frameBufferInfo->cursor_y -= ((frameBufferInfo->fontArrays[currentFont]).height) + 1;
 	}
 	if(frameBufferInfo->cursor_x < 0) { 										// Later make it go up a line
-		frameBufferInfo->cursor_x = frameBufferInfo->depth;
+		frameBufferInfo->cursor_x = 0;
 	}
 }
 
@@ -265,6 +266,7 @@ void MoveScreenUpOneLine(void) {
 	unsigned int destination;
 	unsigned int source;
 	unsigned int offset = (frameBufferInfo->pitch * ((frameBufferInfo->fontArrays[currentFont]).height + 1));
+	DataSynchronisationBarrier();
 	for(destination = 0; destination < (frameBufferInfo->size - offset); destination++) {
 		source = destination + offset;
 		frameBufferInfo->framebuffer[destination] = frameBufferInfo->framebuffer[source];
@@ -273,7 +275,7 @@ void MoveScreenUpOneLine(void) {
 }
 
 void ClearBottomLineToBackground(void) {
-	
+	DataSynchronisationBarrier();
 	for (unsigned int i = (frameBufferInfo->size - (frameBufferInfo->pitch * (frameBufferInfo->fontArrays[currentFont].height+2))); i <= frameBufferInfo->size; i++) {
 		switch(i % 3) {
 			// assumes 24 bit mode.
@@ -288,6 +290,7 @@ void ClearBottomLineToBackground(void) {
 }
 
 void WriteCharacterRow(int position, uint32_t pattern, int size) {
+	DataSynchronisationBarrier();
 	for(int i = size-1; i >= 0; i--) {
 		if (CheckBit(pattern, i)) {
 			frameBufferInfo->framebuffer[position++] = currentForegroundColour.red;

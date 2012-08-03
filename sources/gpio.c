@@ -159,56 +159,57 @@ int Gpio_GetMorseSpeed() {
 
 char* Gpio_ConvertToHexString(uint32_t number, char* convertedNumber) {
 	int counter =0;
+	char temp[9];
 	do {
 		switch (number%16) {
 			default:
 			case 0:
-				convertedNumber[counter] = '0';
+				temp[counter] = '0';
 				break;
 			case 1:
-				convertedNumber[counter] = '1';
+				temp[counter] = '1';
 				break;
 			case 2:
-				convertedNumber[counter] = '2';
+				temp[counter] = '2';
 				break;
 			case 3:
-				convertedNumber[counter] = '3';
+				temp[counter] = '3';
 				break;
 			case 4:
-				convertedNumber[counter] = '4';
+				temp[counter] = '4';
 				break;
 			case 5:
-				convertedNumber[counter] = '5';
+				temp[counter] = '5';
 				break;
 			case 6:
-				convertedNumber[counter] = '6';
+				temp[counter] = '6';
 				break;
 			case 7:
-				convertedNumber[counter] = '7';
+				temp[counter] = '7';
 				break;
 			case 8:
-				convertedNumber[counter] = '8';
+				temp[counter] = '8';
 				break;
 			case 9:
-				convertedNumber[counter] = '9';
+				temp[counter] = '9';
 				break;
 			case 10:
-				convertedNumber[counter] = 'A';
+				temp[counter] = 'A';
 				break;
 			case 11:
-				convertedNumber[counter] = 'B';
+				temp[counter] = 'B';
 				break;
 			case 12:
-				convertedNumber[counter] = 'C';
+				temp[counter] = 'C';
 				break;
 			case 13:
-				convertedNumber[counter] = 'D';
+				temp[counter] = 'D';
 				break;
 			case 14:
-				convertedNumber[counter] = 'E';
+				temp[counter] = 'E';
 				break;
 			case 15:
-				convertedNumber[counter] = 'F';
+				temp[counter] = 'F';
 				break;
 		}
 		number = number/16;
@@ -216,44 +217,47 @@ char* Gpio_ConvertToHexString(uint32_t number, char* convertedNumber) {
 	} while (0 != number);
 	
 	convertedNumber[counter] = '\0';
-	
+	for (int i = 0; i < counter; i++) {
+		convertedNumber[i] = temp[counter-i-1];
+	}
 	return convertedNumber;
 }
 
 char* Gpio_ConvertToDecimalString(uint32_t number, char* convertedNumber) {
 	int counter =0;
+	char temp[9];
 	do {
 		switch (number%10) {
 			default:
 			case 0:
-				convertedNumber[counter] = '0';
+				temp[counter] = '0';
 				break;
 			case 1:
-				convertedNumber[counter] = '1';
+				temp[counter] = '1';
 				break;
 			case 2:
-				convertedNumber[counter] = '2';
+				temp[counter] = '2';
 				break;
 			case 3:
-				convertedNumber[counter] = '3';
+				temp[counter] = '3';
 				break;
 			case 4:
-				convertedNumber[counter] = '4';
+				temp[counter] = '4';
 				break;
 			case 5:
-				convertedNumber[counter] = '5';
+				temp[counter] = '5';
 				break;
 			case 6:
-				convertedNumber[counter] = '6';
+				temp[counter] = '6';
 				break;
 			case 7:
-				convertedNumber[counter] = '7';
+				temp[counter] = '7';
 				break;
 			case 8:
-				convertedNumber[counter] = '8';
+				temp[counter] = '8';
 				break;
 			case 9:
-				convertedNumber[counter] = '9';
+				temp[counter] = '9';
 				break;
 		}
 		number = number/10;
@@ -261,7 +265,9 @@ char* Gpio_ConvertToDecimalString(uint32_t number, char* convertedNumber) {
 	} while (0 != number);
 	
 	convertedNumber[counter] = '\0';
-
+	for (int i = 0; i < counter; i++) {
+		convertedNumber[i] = temp[counter-i-1];
+	}
 	return convertedNumber;
 }
 
