@@ -31,6 +31,12 @@ bin/mailbox.o : sources/mailbox.c
 bin/gpio.o : sources/gpio.c
 	gcc $(COPS) -c sources/gpio.c -o bin/gpio.o
 
+bin/console.o : sources/console.c
+	gcc $(COPS) -c sources/console.c -o bin/console.o
+
+bin/atags.o : sources/atags.c
+	gcc $(COPS) -c sources/atags.c -o bin/atags.o
+
 bin/generalIO.o : sources/generalIO.c
 	gcc $(COPS) -c sources/generalIO.c -o bin/generalIO.o
 
@@ -40,8 +46,8 @@ bin/general.o : sources/general.c
 bin/standardFont.o : sources/standardFont.c
 	gcc $(COPS) -c sources/standardFont.c -o bin/standardFont.o
 
-bin/kernel.elf : sources/memmap bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/generalIO.o bin/general.o bin/standardFont.o
-	ld bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
+bin/kernel.elf : sources/memmap bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o
+	ld bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
 	objdump -D bin/kernel.elf > kernel.list
 
 SDcard/mjw_kernel.img : bin/kernel.elf

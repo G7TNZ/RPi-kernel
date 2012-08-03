@@ -1,27 +1,33 @@
 /*
- * framebuffer.h
+ * console.c
  *
  */
- 
-#ifndef _H_FRAMEBUFFER
-#define _H_FRAMEBUFFER
 
-#include <stdint.h>
-#include "colourStructure.h"
+#include "headers/framebuffer.h"
+#include "headers/console.h"
+#include "headers/gpio.h"
 
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 10
+void Cn_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
+	char convertedNumber[9];
+	char* atags = (char*) start;
+	for (int index = 0; index < (end - start); index++) {
+		if (0 == (index % 16)) {
+			Fb_WriteString("\n\r");
+			Fb_WriteString(Gpio_ConvertToHexString(start+ index, convertedNumber, 4));
+			Fb_WriteString(":");
+		} else if (0 == (index % 8)) {
+			Fb_WriteCharacter(' ');
+		}
+		Fb_WriteCharacter(' ');
+		Fb_WriteString(Gpio_ConvertToHexString((int) atags[index], convertedNumber, 2));
+	}
+}
 
-int	InitFb(void);
-void Fb_ClearScreen(void);
-void Fb_SetForegroundColour(struct ColourStructure colour);
-void Fb_SetBackgroundColour(struct ColourStructure colour);
-void Fb_SetCursorPosition(int x_position, int y_position);
-void Fb_WriteCharacter(unsigned char putCharacter);
-void Fb_WriteString(const char * putString);
-struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
+/*
+ * Local functions
+ */
 
-#endif
+
 
 /*
  * Copyright (c) 2012 Ischus Limited www.ischus.com

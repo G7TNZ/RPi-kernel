@@ -11,13 +11,13 @@ sdtv_disable_colourburst=1
 hdmi_drive=2
 # DMT
 hdmi_group=2
-# Resolution to 640 x 480 60Hz
-hdmi_mode=4
+# Resolution to 1024 x 768 60Hz
+hdmi_mode=16
 # depth
-framebuffer_depth=24
+framebuffer_depth=16
 
 # enable an image on boot
-# test_mode=1
+test_mode=0
 
 # Boot options
 # disable_commandline_tags=1

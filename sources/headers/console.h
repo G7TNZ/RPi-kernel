@@ -1,26 +1,14 @@
 /*
- * framebuffer.h
+ * console.h
  *
  */
+
+#ifndef _H_CONSOLE
+#define _H_CONSOLE
+
+void Cn_WriteMemoryBlockHex(uint32_t start, uint32_t end);
  
-#ifndef _H_FRAMEBUFFER
-#define _H_FRAMEBUFFER
-
-#include <stdint.h>
-#include "colourStructure.h"
-
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 10
-
-int	InitFb(void);
-void Fb_ClearScreen(void);
-void Fb_SetForegroundColour(struct ColourStructure colour);
-void Fb_SetBackgroundColour(struct ColourStructure colour);
-void Fb_SetCursorPosition(int x_position, int y_position);
-void Fb_WriteCharacter(unsigned char putCharacter);
-void Fb_WriteString(const char * putString);
-struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
-
+ 
 #endif
 
 /*

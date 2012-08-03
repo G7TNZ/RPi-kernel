@@ -120,46 +120,6 @@ void Fb_WriteCharacterInFont(unsigned char putCharacter, char* characterFont) {
 
 }
 
-void Fb_ClearScreen(void) {
-	DataSynchronisationBarrier();
-	for (unsigned int i = 0; i < frameBufferInfo->size; i++) {
-		switch(i % 3) {
-			// assumes 24 bit mode.
-			case 0: frameBufferInfo->framebuffer[i] = currentBackgroundColour.red;
-				break;
-			case 1: frameBufferInfo->framebuffer[i] = currentBackgroundColour.green;
-				break;
-			case 2: frameBufferInfo->framebuffer[i] = currentBackgroundColour.blue;
-				break;
-		}
-	}
-	frameBufferInfo->cursor_x = 0;
-	frameBufferInfo->cursor_y = 2;
-}
-
-void Fb_SetBackgroundColour(struct ColourStructure colour) {
-	currentBackgroundColour.red		= colour.red;	
-	currentBackgroundColour.green	= colour.green;	
-	currentBackgroundColour.blue	= colour.blue;	
-}
-
-void Fb_SetForegroundColour(struct ColourStructure colour) {
-	currentForegroundColour.red		= colour.red;	
-	currentForegroundColour.green	= colour.green;	
-	currentForegroundColour.blue	= colour.blue;	
-}
-
-void Fb_SetCursorPosition(int x_position, int y_position) {
-	frameBufferInfo->cursor_x = x_position * frameBufferInfo->depth;
-	frameBufferInfo->cursor_y = y_position;
-}
-
-struct Cursor Fb_GetCursorPosition(struct Cursor cursor) {
-	cursor.x = frameBufferInfo->cursor_x;
-	cursor.y = frameBufferInfo->cursor_y;
-	return cursor;
-}
-
 void Fb_WriteString(const char * putString) {
 	int index = 0;
 	while (0 != putString[index]) {
@@ -224,9 +184,76 @@ void Fb_WriteCharacter(unsigned char putCharacter) {
 	}
 }
 
+void Fb_ClearScreen(void) {
+	DataSynchronisationBarrier();
+	for (unsigned int i = 0; i < frameBufferInfo->size; i++) {
+		switch(i % 3) {
+			// assumes 24 bit mode.
+			case 0: frameBufferInfo->framebuffer[i] = currentBackgroundColour.red;
+				break;
+			case 1: frameBufferInfo->framebuffer[i] = currentBackgroundColour.green;
+				break;
+			case 2: frameBufferInfo->framebuffer[i] = currentBackgroundColour.blue;
+				break;
+		}
+	}
+	frameBufferInfo->cursor_x = 0;
+	frameBufferInfo->cursor_y = 2;
+}
+
+void Fb_SetBackgroundColour(struct ColourStructure colour) {
+	currentBackgroundColour.red		= colour.red;	
+	currentBackgroundColour.green	= colour.green;	
+	currentBackgroundColour.blue	= colour.blue;	
+}
+
+void Fb_SetForegroundColour(struct ColourStructure colour) {
+	currentForegroundColour.red		= colour.red;	
+	currentForegroundColour.green	= colour.green;	
+	currentForegroundColour.blue	= colour.blue;	
+}
+
+void Fb_SetCursorPosition(int x_position, int y_position) {
+	frameBufferInfo->cursor_x = x_position * frameBufferInfo->depth;
+	frameBufferInfo->cursor_y = y_position;
+}
+
+struct Cursor Fb_GetCursorPosition(struct Cursor cursor) {
+	cursor.x = frameBufferInfo->cursor_x;
+	cursor.y = frameBufferInfo->cursor_y;
+	return cursor;
+}
+
 /*
  * Local functions
  */
+
+void MoveScreenUpOneLine(void) {
+	unsigned int destination;
+	unsigned int source;
+	unsigned int offset = (frameBufferInfo->pitch * ((frameBufferInfo->fontArrays[currentFont]).height + 1));
+	DataSynchronisationBarrier();
+	for(destination = 0; destination < (frameBufferInfo->size - offset); destination++) {
+		source = destination + offset;
+		frameBufferInfo->framebuffer[destination] = frameBufferInfo->framebuffer[source];
+	}
+	ClearBottomLineToBackground();
+}
+
+void ClearBottomLineToBackground(void) {
+	DataSynchronisationBarrier();
+	for (unsigned int i = (frameBufferInfo->size - (frameBufferInfo->pitch * (frameBufferInfo->fontArrays[currentFont].height+2))); i <= frameBufferInfo->size; i++) {
+		switch(i % 3) {
+			// assumes 24 bit mode.
+			case 0: frameBufferInfo->framebuffer[i] = currentBackgroundColour.red;
+				break;
+			case 1: frameBufferInfo->framebuffer[i] = currentBackgroundColour.green;
+				break;
+			case 2: frameBufferInfo->framebuffer[i] = currentBackgroundColour.blue;
+				break;
+		}
+	}
+}
 
 void WriteCharacter(unsigned char putCharacter) {
 	uint32_t rowPattern;
@@ -261,34 +288,6 @@ void CheckPosition(void) {
 		frameBufferInfo->cursor_x = 0;
 	}
 }
-
-void MoveScreenUpOneLine(void) {
-	unsigned int destination;
-	unsigned int source;
-	unsigned int offset = (frameBufferInfo->pitch * ((frameBufferInfo->fontArrays[currentFont]).height + 1));
-	DataSynchronisationBarrier();
-	for(destination = 0; destination < (frameBufferInfo->size - offset); destination++) {
-		source = destination + offset;
-		frameBufferInfo->framebuffer[destination] = frameBufferInfo->framebuffer[source];
-	}
-	ClearBottomLineToBackground();
-}
-
-void ClearBottomLineToBackground(void) {
-	DataSynchronisationBarrier();
-	for (unsigned int i = (frameBufferInfo->size - (frameBufferInfo->pitch * (frameBufferInfo->fontArrays[currentFont].height+2))); i <= frameBufferInfo->size; i++) {
-		switch(i % 3) {
-			// assumes 24 bit mode.
-			case 0: frameBufferInfo->framebuffer[i] = currentBackgroundColour.red;
-				break;
-			case 1: frameBufferInfo->framebuffer[i] = currentBackgroundColour.green;
-				break;
-			case 2: frameBufferInfo->framebuffer[i] = currentBackgroundColour.blue;
-				break;
-		}
-	}
-}
-
 void WriteCharacterRow(int position, uint32_t pattern, int size) {
 	DataSynchronisationBarrier();
 	for(int i = size-1; i >= 0; i--) {

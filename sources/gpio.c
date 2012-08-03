@@ -157,7 +157,7 @@ int Gpio_GetMorseSpeed() {
 	return dot_time;
 }
 
-char* Gpio_ConvertToHexString(uint32_t number, char* convertedNumber) {
+char* Gpio_ConvertToHexString(uint32_t number, char* convertedNumber, int pack) {
 	int counter =0;
 	char temp[9];
 	do {
@@ -216,10 +216,17 @@ char* Gpio_ConvertToHexString(uint32_t number, char* convertedNumber) {
 		counter++;
 	} while (0 != number);
 	
-	convertedNumber[counter] = '\0';
-	for (int i = 0; i < counter; i++) {
-		convertedNumber[i] = temp[counter-i-1];
+	int start = 0;
+	if (pack > counter) {
+		start = pack - counter;
+		for (int i = 0; i < start; i++) {
+			convertedNumber[i] = '0';
+		}
 	}
+	for (int i = 0; i < counter; i++) {
+		convertedNumber[i + start] = temp[counter-i-1];
+	}
+	convertedNumber[counter + start] = '\0';
 	return convertedNumber;
 }
 
