@@ -7,32 +7,16 @@
 
 .global start_asm
 start_asm:
+		ldr			r0,	=LinuxMachineType		@ Save to pass to kernel
+		str			r1, [r0]
+		ldr			r0,	=AtagsAddress				@ Save to pass to kernel
+		str			r2, [r0]
+
 		mrs			r4, cpsr
-		bic			r4, r4, #0x1f
-
-		# FIQ mode
-		orr			r3, r4, #0x11
-		msr			cpsr_c, r3
-		ldr			sp, =exc_stack
-
-		# IRQ mode
-		orr			r3, r4, #0x12
-		msr			cpsr_c, r3
-		ldr			sp, =exc_stack
-
-		# ABORT mode
-		orr			r3, r4, #0x17
-		msr			cpsr_c, r3
-		ldr			sp, =exc_stack
-
-		# UNDEFINED mode
-		orr			r3, r4, #0x1b
-		msr			cpsr_c, r3
-		ldr			sp, =exc_stack
-
+		bic			r4, r4, #0x1f						@ r4 has the mode cleared
 		# switch to supervisor mode
-		orr			r3, r4, #0x13
-		msr			cpsr_c, r3
+		orr			r3, r4, #0x13						@ or the supervisor mode in
+		msr			cpsr_c, r3							@ put into the right hand end cpsr
 		ldr			sp, =temp_stack
 
 		#Create the first stack frame
@@ -79,18 +63,18 @@ DataMemoryBarrier:
 
 .global MemoryBarrier
 MemoryBarrier:
-		mcr			p15, 0, ip, c7, c5, 0			@ invalidate I cache
-		mcr			p15, 0, ip, c7, c5, 6			@ invalidate BTB
+		mcr			p15, 0, ip, c7, c5,  0		@ invalidate I cache
+		mcr			p15, 0, ip, c7, c5,  6		@ invalidate BTB
 		mcr			p15, 0, ip, c7, c10, 4		@ drain write buffer
-		mcr			p15, 0, ip, c7, c5, 4			@ prefetch flush
+		mcr			p15, 0, ip, c7, c5,  4		@ prefetch flush
 		mov			pc, lr
 
 .global DataSynchronisationBarrier
 DataSynchronisationBarrier:
 		stmfd		sp!,{r0-r8,r12,lr}				@ Store registers
-		mcr			p15, 0, ip, c7, c5, 0			@ invalidate I cache
-		mcr			p15,0, ip, c7, c5, 6			@ invalidate BTB
-		mcr			p15,  0, ip, c7, c10, 4		@ drain write buffer
+		mcr			p15, 0, ip, c7, c5,  0		@ invalidate I cache
+		mcr			p15, 0, ip, c7, c5,  6		@ invalidate BTB
+		mcr			p15, 0, ip, c7, c10, 4		@ drain write buffer
 		mcr			p15, 0, ip, c7, c10, 4		@ prefetch flush
 		ldmfd		sp!,{r0-r8,r12,pc}				@ restore registers	 and return
 
@@ -106,14 +90,25 @@ supervisor_sp:
 
 .data
 .p2align 4
-.global MemorySpace
-MemorySpace:
-.space			0x400, 00
+.global FramebufferMemory
+FramebufferMemory:
+.space			0x400, 00 			@ 100 words of 4 bytes
 
-.global EndMemory
-EndMemory:
-.byte				0xAA
+.global EndFrameBuffer
+EndFrameBuffer:
+.space			4, 0xAA
 
+.global LinuxMachineType
+LinuxMachineType:
+.word			00000000
+
+.global AtagsAddress
+AtagsAddress:
+.word			00000000
+
+.global FreeMemoryStart
+FreeMemoryStart:
+.word			00000000
 
 .end
 

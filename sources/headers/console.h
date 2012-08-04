@@ -6,7 +6,7 @@
 #ifndef _H_CONSOLE
 #define _H_CONSOLE
 
-void Cn_WriteMemoryBlockHex(uint32_t start, uint32_t end);
+void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end);
  
  
 #endif

@@ -6,9 +6,12 @@
 #ifndef _H_GENERAL
 #define _H_GENERAL
 
+#include <stdint.h>
+
 #define CheckBit(var, pos) ((var) & (1 << (pos)))
 
 int string_length(const char* str);
+void* AllocateMemory(uint32_t size);
 
 #endif
 

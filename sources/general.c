@@ -6,6 +6,7 @@
  #include <stdint.h>
  #include "headers/general.h"
  #include "headers/gpio.h"
+ #include "headers/vectors.h"
  
 int string_length(const char* str) {
 	const char* s = str;
@@ -30,6 +31,17 @@ void __div0(void) {
 	Gpio_FlashStatusLed(PAT_R, END_OF_LETTER);
 	Gpio_FlashStatusLed(PAT_O, END_OF_LETTER);
 	Gpio_FlashStatusLed(PAT_R, END_OF_WORD);
+}
+
+void* NextFreeMemory = 0;
+
+void* AllocateMemory(uint32_t size) {
+	if(0 == NextFreeMemory) {
+		NextFreeMemory = &FreeMemoryStart;
+	}
+	void* StartOfAllocatedMemory = NextFreeMemory;
+	NextFreeMemory += size;
+	return StartOfAllocatedMemory;
 }
 
 /*

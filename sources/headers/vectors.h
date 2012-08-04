@@ -15,7 +15,11 @@ extern void DataMemoryBarrier (void);
 extern void DataSynchronisationBarrier (void);
 extern void SmallDelay (unsigned int);
 extern void VoidCall (void);
-extern uint32_t MemorySpace;
+extern uint32_t FramebufferMemory;
+extern uint32_t LinuxMachineType;
+extern uint32_t AtagsAddress;
+extern uint32_t EndFrameBuffer;
+extern uint32_t FreeMemoryStart;
 
 #endif
 

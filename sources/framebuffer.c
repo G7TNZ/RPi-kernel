@@ -60,7 +60,7 @@ void ClearBottomLineToBackground(void);
 // Public functions
 int InitFb(int mode) {
 	// framebuffer structure located where lower 4 bits are zero.
-	volatile struct FrameBuffer* frameBuffer = (volatile struct FrameBuffer*) &MemorySpace;
+	volatile struct FrameBuffer* frameBuffer = (volatile struct FrameBuffer*) &FramebufferMemory;
 	switch (mode) {
 		default:
 		case MODE640X480X16:
@@ -163,6 +163,10 @@ void Fb_ChangeFont(char* newFont) {
 
 void Fb_WriteCharacterInFont(unsigned char putCharacter, char* characterFont) {
 
+}
+
+void Fb_WriteNewLine(void) {
+	Fb_WriteString("\n\r");
 }
 
 void Fb_WriteString(const char * putString) {

@@ -3,14 +3,127 @@
  *
  */
 
+#include <stdint.h>
 #include "headers/framebuffer.h"
+#include "headers/general.h"
 #include "headers/vectors.h"
+#include "headers/atags.h"
+#include "headers/atagStructures.h"
+
+#define clk(element) (element * sizeof(CommandLineKeys))
+
+/*
+ *	Local prototypes
+ *
+  */
+void GetAtagCore(uint32_t address, uint32_t atagSize);
+void GetAtagMemory(uint32_t address, uint32_t atagSize);
+void GetAtagVideoText(uint32_t address, uint32_t atagSize);
+void GetAtagRamDisk(uint32_t address, uint32_t atagSize);
+void GetAtagInitRd2(uint32_t address, uint32_t atagSize);
+void GetAtagSerialNumber(uint32_t address, uint32_t atagSize);
+void GetAtagBoardRevision(uint32_t address, uint32_t atagSize);
+void GetAtagVideoLfb(uint32_t address, uint32_t atagSize);
+void GetAtagCommandLine(uint32_t address, uint32_t atagSize);
+
+void Atags_Init(void) {
+	bootParameters.machineType	= LinuxMachineType;
+	bootParameters.atagsAddress = AtagsAddress;
+	
+	uint32_t atagAddress = AtagsAddress;
+	uint32_t atagSize;
+	uint32_t atagCode;
+	
+	do {
+		atagSize	= ReadFromMemory32(atagAddress) - 2;
+		atagAddress += 4;
+		atagCode	= ReadFromMemory32(atagAddress);
+		atagAddress += 4;
+		switch (atagCode) {
+			default:
+			case ATAGNONE:
+				break;
+			case ATAGCORE:
+				GetAtagCore(atagAddress, atagSize);
+				break;
+			case ATAGMEMORY:
+				GetAtagMemory(atagAddress, atagSize);
+				break;
+			case ATAGVIDEOTEXT:
+				GetAtagVideoText(atagAddress, atagSize);
+				break;
+			case ATAGRAMDISK:
+				GetAtagRamDisk(atagAddress, atagSize);
+				break;
+			case ATAGINITRD2:
+				GetAtagInitRd2(atagAddress, atagSize);
+				break;
+			case ATAGSERIALNUMBER:
+				GetAtagSerialNumber(atagAddress, atagSize);
+				break;
+			case ATAGBOARDREVISION:
+				GetAtagBoardRevision(atagAddress, atagSize);
+				break;
+			case ATAGVIDEOLFB:
+				GetAtagVideoLfb(atagAddress, atagSize);
+				break;
+			case ATAGCOMMANDLINE:
+				GetAtagCommandLine(atagAddress, atagSize);
+				break;
+		}
+	} while (ATAGNONE != atagCode);
+	
+	
+	CommandLineKeys* clk = (CommandLineKeys*) AllocateMemory(3 * sizeof(CommandLineKeys));
+	
+	(clk+clk(0))->key		= "MyKey";
+	(clk+clk(0))->value	= "KeyValue";
+	(clk+clk(1))->key		= "SecondKey";
+	(clk+clk(1))->value	= "SecondValue";
+	(clk+clk(2))->key		= "";
+	(clk+clk(2))->value	= "";
+	bootParameters.commandLineParameters = clk;
+}
 
 /*
  * Local functions
  */
+void GetAtagCore(uint32_t address, uint32_t atagSize) {
+	if (5 != atagSize) return;
+	
+}
 
+void GetAtagMemory(uint32_t address, uint32_t atagSize) {
 
+}
+
+void GetAtagVideoText(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagRamDisk(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagInitRd2(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagSerialNumber(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagBoardRevision(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagVideoLfb(uint32_t address, uint32_t atagSize) {
+
+}
+
+void GetAtagCommandLine(uint32_t address, uint32_t atagSize) {
+
+}
 
 /*
  * Copyright (c) 2012 Ischus Limited www.ischus.com

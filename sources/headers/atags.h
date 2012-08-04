@@ -6,6 +6,29 @@
 #ifndef _H_ATAGS
 #define _H_ATAGS
 
+#include <stdint.h>
+
+typedef struct {
+	char*	key;
+	char*	value;
+} CommandLineKeys;
+
+struct BootParameters {
+	uint32_t	machineType;
+	uint32_t	atagsAddress;
+	int				dmaChannnels;
+	int				fbWidth;
+	int				fbHeight;
+	int				fbDepth;
+	char			macAddress[18];
+	uint32_t	serialNumber;
+	uint32_t	boardRevision;
+	CommandLineKeys* commandLineParameters;	
+} bootParameters;
+
+struct bootParameters;
+
+void Atags_Init(void);
  
 #endif
 

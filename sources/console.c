@@ -7,7 +7,7 @@
 #include "headers/console.h"
 #include "headers/gpio.h"
 
-void Cn_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
+void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
 	char convertedNumber[9];
 	char* atags = (char*) start;
 	for (int index = 0; index < (end - start); index++) {

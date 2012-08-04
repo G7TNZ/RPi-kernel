@@ -12,13 +12,16 @@
 #include "headers/vectors.h"
 #include "headers/colourStructure.h"
 #include "headers/console.h"
+#include "headers/atags.h"
 
-void WriteTags(char* atags);
+void WriteCmdLineStrings(char* atags);
 
 int start_kernel(void) {
 	
 	Gpio_SetMorse(36, true);
 	Gpio_WordSpace();
+	
+	Atags_Init();
 	
 	Gpio_SetPinDirection(RPI_STATUS, OUTPUT);
 	SmallDelay(5);
@@ -41,36 +44,19 @@ int start_kernel(void) {
 	colour.green	= 0x30;
 	colour.blue		= 0x30;
 	Fb_SetForegroundColour(colour);
-
+	
 	char putString[] = "Hello World!\n\r\n\rReady> ";
 	Fb_WriteString(putString);
-	Fb_WriteString("show 0 50\n\r");
-	Cn_WriteMemoryBlockHex(0, 0x50);					// Vector block
-	Fb_WriteString("\n\r\n\rReady> show 100 21F\n\r");
-	Cn_WriteMemoryBlockHex(0x100, 0x21F);			// Atag block
-	Fb_WriteString("\n\r\n\rReady> print cmdline\n\r\n\r");
-	char* atags = (char*) 0x12C;
-	WriteTags(atags);													// Atag as character list
-	Fb_WriteString("\n\rFinished.\n\r\n\rReady> ");
-	
+	char decimalString[10];
+	Fb_WriteString(Gpio_ConvertToDecimalString(bootParameters.machineType, decimalString));
+	Fb_WriteNewLine();
+			
 	Gpio_SetMorse(1, false);
 	while(1) {
 		Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
 	}
 
 	return 0;
-}
-
-void WriteTags(char* atags) {
-	int counter = 0;
-	while(0 != atags[counter]) {
-		if (' ' == atags[counter]) {
-			Fb_WriteString("\n\r");
-		} else {
-			Fb_WriteCharacter(atags[counter]);
-		}
-		counter++;		
-	}
 }
 
 /*
