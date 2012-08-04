@@ -44,6 +44,10 @@ void* AllocateMemory(uint32_t size) {
 	return StartOfAllocatedMemory;
 }
 
+void FreeAllocatedMemory(void* address) {
+
+}
+
 /*
  * Copyright (c) 2012 Ischus Limited www.ischus.com
  *

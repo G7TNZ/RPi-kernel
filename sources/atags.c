@@ -15,7 +15,8 @@
 /*
  *	Local prototypes
  *
-  */
+ */
+ 
 void GetAtagCore(uint32_t address, uint32_t atagSize);
 void GetAtagMemory(uint32_t address, uint32_t atagSize);
 void GetAtagVideoText(uint32_t address, uint32_t atagSize);
@@ -26,6 +27,11 @@ void GetAtagBoardRevision(uint32_t address, uint32_t atagSize);
 void GetAtagVideoLfb(uint32_t address, uint32_t atagSize);
 void GetAtagCommandLine(uint32_t address, uint32_t atagSize);
 
+/*
+ *	Public methods
+ *
+ */
+ 
 void Atags_Init(void) {
 	bootParameters.machineType	= LinuxMachineType;
 	bootParameters.atagsAddress = AtagsAddress;
@@ -35,7 +41,7 @@ void Atags_Init(void) {
 	uint32_t atagCode;
 	
 	do {
-		atagSize	= ReadFromMemory32(atagAddress) - 2;
+		atagSize	= ReadFromMemory32(atagAddress);
 		atagAddress += 4;
 		atagCode	= ReadFromMemory32(atagAddress);
 		atagAddress += 4;
@@ -71,9 +77,10 @@ void Atags_Init(void) {
 				GetAtagCommandLine(atagAddress, atagSize);
 				break;
 		}
+		atagAddress = ((atagSize - 2) * 4);
 	} while (ATAGNONE != atagCode);
 	
-	
+	// test block
 	CommandLineKeys* clk = (CommandLineKeys*) AllocateMemory(3 * sizeof(CommandLineKeys));
 	
 	(clk+clk(0))->key		= "MyKey";
@@ -83,18 +90,29 @@ void Atags_Init(void) {
 	(clk+clk(2))->key		= "";
 	(clk+clk(2))->value	= "";
 	bootParameters.commandLineParameters = clk;
+	
 }
 
 /*
  * Local functions
+ *
  */
+
 void GetAtagCore(uint32_t address, uint32_t atagSize) {
-	if (5 != atagSize) return;
-	
+	if (2 == atagSize) return;
+		bootParameters.flags	= ReadFromMemory32(address);
+		address += 4;
+		bootParameters.pageSize	= ReadFromMemory32(address);
+		address += 4;
+		bootParameters.rootDevice	= ReadFromMemory32(address);
+		address += 4;
 }
 
 void GetAtagMemory(uint32_t address, uint32_t atagSize) {
-
+	bootParameters.memorySize	= ReadFromMemory32(address);
+	address += 4;
+	bootParameters.memoryStart	= ReadFromMemory32(address);
+	address += 4;
 }
 
 void GetAtagVideoText(uint32_t address, uint32_t atagSize) {
@@ -122,7 +140,9 @@ void GetAtagVideoLfb(uint32_t address, uint32_t atagSize) {
 }
 
 void GetAtagCommandLine(uint32_t address, uint32_t atagSize) {
-
+	for (int i = 0; i < ((atagSize - 2) * 4); i++) {
+		
+	}
 }
 
 /*

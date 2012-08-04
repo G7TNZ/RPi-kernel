@@ -16,6 +16,11 @@ typedef struct {
 struct BootParameters {
 	uint32_t	machineType;
 	uint32_t	atagsAddress;
+	uint32_t	flags;
+	uint32_t	pageSize;
+	uint32_t	rootDevice;
+	uint32_t	memorySize;
+	uint32_t	memoryStart;
 	int				dmaChannnels;
 	int				fbWidth;
 	int				fbHeight;

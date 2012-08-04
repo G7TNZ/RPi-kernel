@@ -8,3 +8,5 @@
 *.broadcom
 *~
 !bin/
+/sources/headers/asmStart.h.temp
+/sources/asmStart.s.temp
