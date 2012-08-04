@@ -6,7 +6,7 @@
  #include <stdint.h>
  #include "headers/general.h"
  #include "headers/gpio.h"
- #include "headers/vectors.h"
+ #include "headers/asmStart.h"
  
 int string_length(const char* str) {
 	const char* s = str;

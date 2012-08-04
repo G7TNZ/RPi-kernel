@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #include "headers/gpio.h"
-#include "headers/vectors.h"
+#include "headers/asmStart.h"
 #include "headers/general.h"
 
 int dot_time = 1;

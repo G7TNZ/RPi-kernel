@@ -13,8 +13,8 @@ clean :
 	rm -f *.list
 	rm -f SDcard/*.img
 
-bin/vectors.o : sources/vectors.s
-	as sources/vectors.s -o bin/vectors.o
+bin/asmStart.o : sources/asmStart.s
+	as sources/asmStart.s -o bin/asmStart.o
 
 bin/armDivision.o : sources/armDivision.s
 	as sources/armDivision.s -o bin/armDivision.o
@@ -46,8 +46,8 @@ bin/general.o : sources/general.c
 bin/standardFont.o : sources/standardFont.c
 	gcc $(COPS) -c sources/standardFont.c -o bin/standardFont.o
 
-bin/kernel.elf : sources/memmap bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o
-	ld bin/vectors.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
+bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o
+	ld bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
 	objdump -D bin/kernel.elf > kernel.list
 
 SDcard/mjw_kernel.img : bin/kernel.elf

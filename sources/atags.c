@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "headers/framebuffer.h"
 #include "headers/general.h"
-#include "headers/vectors.h"
+#include "headers/asmStart.h"
 #include "headers/atags.h"
 #include "headers/atagStructures.h"
 

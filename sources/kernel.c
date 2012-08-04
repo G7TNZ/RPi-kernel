@@ -9,7 +9,7 @@
 #include "headers/kernel.h"
 #include "headers/framebuffer.h"
 #include "headers/gpio.h"
-#include "headers/vectors.h"
+#include "headers/asmStart.h"
 #include "headers/colourStructure.h"
 #include "headers/console.h"
 #include "headers/atags.h"

@@ -5,7 +5,7 @@
  */
  
 #include "headers/mailbox.h"
-#include "headers/vectors.h"
+#include "headers/asmStart.h"
  
 uint32_t MailboxStatus() {
 	return ReadFromMemory32(MailboxAddress(MAILBOX0, MAILBOX_STATUS));
