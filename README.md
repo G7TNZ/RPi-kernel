@@ -12,18 +12,19 @@ Raspberry Pi bare metal experimentation
 5. Methods to change the foreground and background colours.
 6. A character set that can be written to the screen.
 7. Method to dump a block of memory in hex to the screen.
+8. GPIO7 setup for Morse key input.
 
 ## Known issues: 
 The framebuffer can be tempermental. Sometimes it gives a black screen, sometimes  
 a screen cleared to the colour chosen, and mostly it works with a screen with text  
-written. Every time it gets to the termination where the status Led flashes a string  
-of Morse letter 'V'.
+written. Every time it gets to the termination where GPIO7 is refelcted in the status LED. (Or where the status LED flashes a string of Morse letter 'V' depending on which is active.)
 
 ## Intentions:
 Enable other screen resolutions: 16 and 32 bit.  
 Eventually to get keyboard input via the USB port and ethernet functioning.  
 In the short term to put a Morse key onto a GPIO pin for input and write a Forth  
-interpreter. 
+interpreter.
+Long term: USB, ethernet and SD card read/write. 
 
 ## Setup:
 Make a partition on an SD card. One way to do this is to use a card that has been  
