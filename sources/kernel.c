@@ -52,8 +52,17 @@ int start_kernel(void) {
 	Fb_WriteNewLine();
 			
 	Gpio_SetMorse(1, false);
-	while(1) {
-		Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
+	Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
+	
+	Gpio_SetPinDirection(RPI_GPIO7_P7, INPUT);
+		int morseBit;
+		while(1) {
+		morseBit = Gpio_Read(RPI_GPIO7_P7);
+		if (0 == morseBit) {
+			Gpio_Write(RPI_STATUS, N_SET);
+		} else {
+			Gpio_Write(RPI_STATUS, N_CLEAR);
+		}
 	}
 
 	return 0;

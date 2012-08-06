@@ -37,6 +37,9 @@ bin/console.o : sources/console.c
 bin/atags.o : sources/atags.c
 	gcc $(COPS) -c sources/atags.c -o bin/atags.o
 
+bin/morse.o : sources/morse.c
+	gcc $(COPS) -c sources/morse.c -o bin/morse.o
+
 bin/generalIO.o : sources/generalIO.c
 	gcc $(COPS) -c sources/generalIO.c -o bin/generalIO.o
 
@@ -46,8 +49,8 @@ bin/general.o : sources/general.c
 bin/standardFont.o : sources/standardFont.c
 	gcc $(COPS) -c sources/standardFont.c -o bin/standardFont.o
 
-bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o
-	ld bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
+bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/morse.o bin/generalIO.o bin/general.o bin/standardFont.o
+	ld bin/asmStart.o bin/armDivision.o bin/kernel.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/morse.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
 	objdump -D bin/kernel.elf > kernel.list
 
 SDcard/mjw_kernel.img : bin/kernel.elf

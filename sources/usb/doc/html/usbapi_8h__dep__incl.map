@@ -1,5 +1,0 @@
-base referer
-rect $usbcontrol_8c.html 127,5 220,32
-rect $usbhw__lpc_8c.html 126,56 222,83
-rect $usbinit_8c.html 139,107 208,133
-rect $usbstdreq_8c.html 128,157 219,184

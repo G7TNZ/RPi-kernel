@@ -1,7 +1,0 @@
-base referer
-rect $usbapi_8h.html 251,208 323,235
-rect $usbcontrol_8c.html 372,157 465,184
-rect $usbhw__lpc_8c.html 371,233 467,260
-rect $usbinit_8c.html 384,284 453,311
-rect $usbstdreq_8c.html 373,107 464,133
-rect $usbstruct_8h-source.html 115,157 203,184

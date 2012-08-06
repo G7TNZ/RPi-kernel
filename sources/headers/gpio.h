@@ -85,9 +85,13 @@
 #define OUTPUT false
 
 #define SET true
+#define N_CLEAR true
 #define ONE true
+#define N_ZERO true
 #define CLEAR false
+#define N_SET false
 #define ZERO false
+#define N_ONE false
 
 void	Gpio_SetPinDirection(int pin, bool input);
 bool	Gpio_Read(uint32_t pin);
