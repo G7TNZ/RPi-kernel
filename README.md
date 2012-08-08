@@ -34,13 +34,13 @@ you need to install come to less than 3Mb.
 
 You can find instructions as to where to find the right files and what to install  
 here:  
-        http://www.bassetlug.org.uk/pi_articles
+http://www.bassetlug.org.uk/pi_articles
 
 After building; the files that are in the SDcard folder need to be written to the SDcard.
 
-My thanks go to many (particularly dwelch67, tufty and Cycl0ne) on the Raspberry Pi forum who have outlined the crucial first steps:
-
- http://www.raspberrypi.org/phpBB3/viewforum.php?f=72
+My thanks go to many (particularly dwelch67, tufty and Cycl0ne) on the Raspberry Pi
+forum who have outlined the crucial first steps:
+http://www.raspberrypi.org/phpBB3/viewforum.php?f=72
 
 Martin Wells  
 Ischus  

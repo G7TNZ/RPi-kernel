@@ -1,12 +1,12 @@
 /*
- * kernel.c
+ * main.c
  * The main kernel for raspberry pi bare metal
  *
  */
  
 #include <stdio.h>
 
-#include "headers/kernel.h"
+#include "headers/main.h"
 #include "headers/framebuffer.h"
 #include "headers/gpio.h"
 #include "headers/asmStart.h"
@@ -16,7 +16,7 @@
 
 void WriteCmdLineStrings(char* atags);
 
-int start_kernel(void) {
+int start_main(void) {
 	
 	Gpio_SetMorse(36, true);
 	Gpio_WordSpace();

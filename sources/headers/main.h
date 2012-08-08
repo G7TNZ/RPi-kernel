@@ -1,10 +1,10 @@
 /*
- * kernel.h
+ * main.h
  * 
  */
  
-#ifndef _H_KERNEL
-#define _H_KERNEL
+#ifndef _H_MAIN
+#define _H_MAIN
 
 #endif
 

@@ -2,6 +2,8 @@
  * morse.c
  *
  */
+ 
+#include "headers/morseAscii.h"
 
 void Morse_Init() {
 	

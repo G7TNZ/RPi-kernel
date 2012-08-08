@@ -11,7 +11,7 @@
 #define CheckBit(var, pos) ((var) & (1 << (pos)))
 
 int string_length(const char* str);
-void* AllocateMemory(uint32_t size);
+uint32_t* AllocateMemory(uint32_t size);
 
 #endif
 

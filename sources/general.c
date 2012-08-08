@@ -8,15 +8,26 @@
  #include "headers/gpio.h"
  #include "headers/asmStart.h"
  
+/*
+ * Local prototypes
+ *
+ */
+
+void createHeader(uint32_t *address, uint32_t size, uint32_t allocated);
+void createInitialHeader(uint32_t *address);
+/*
+ * Public methods
+ *
+ */
+ 
 int string_length(const char* str) {
 	const char* s = str;
 	while(*s) ++s;
 	return s-str;
 }
 
-/*
- * provides the error notification for the divide functions
- */
+
+// provides the error notification for the divide functions
 void __div0(void) {
 	Gpio_SetMorse(1, false);
 	Gpio_FlashStatusLed(PAT_D, END_OF_LETTER);
@@ -33,20 +44,64 @@ void __div0(void) {
 	Gpio_FlashStatusLed(PAT_R, END_OF_WORD);
 }
 
-void* NextFreeMemory = 0;
-
-void* AllocateMemory(uint32_t size) {
-	if(0 == NextFreeMemory) {
-		NextFreeMemory = &FreeMemoryStart;
+// Dynamic allocation of memory
+bool isInitialised = false;
+#define MAGICALLOCATED 0x3a5fe82b
+uint32_t* AllocateMemory(uint32_t size) {
+	uint32_t* headerNextPointer = &FreeMemoryStart + 4;
+	
+	if (0 == size) return (uint32_t*) 0x80000000;	// cause exception if used?
+	if(!isInitialised) {
+		createInitialHeader(headerNextPointer);
 	}
-	void* StartOfAllocatedMemory = NextFreeMemory;
-	NextFreeMemory += size;
-	return StartOfAllocatedMemory;
+	
+	bool isFound = false;
+	while ((0 != *headerNextPointer) && !isFound) {	// not at end of list or finished
+		if (0 == *(headerNextPointer+4)) { 						// not allocated
+			uint32_t sizeOfFreeSpace = (*headerNextPointer - (uint32_t)(headerNextPointer) -8);
+			if (size <= sizeOfFreeSpace) { 							// There is space here
+				isFound = true;
+				if ((size - sizeOfFreeSpace) >= 0x10) {		// Insert new header: more than is needed
+					createHeader(headerNextPointer, size, false);
+				} 
+			}
+			headerNextPointer = (uint32_t*)(*headerNextPointer);
+		}
+		if (!isFound) { 															// At the last header without finding space
+			createHeader(headerNextPointer, size, false);
+		}
+	}
+	return (headerNextPointer + 8);
 }
 
-void FreeAllocatedMemory(void* address) {
+bool FreeAllocatedMemory(uint32_t* address) {
+	if (MAGICALLOCATED == *(address - 4)) {
+		*(address - 4) = 0;		
+	}
 
+	return true;
 }
+
+/*
+ * Local methods
+ *
+ */
+
+// Create a memory header
+void createHeader(uint32_t *address, uint32_t size, uint32_t allocated) {
+	*(address + size + 4)	= (uint32_t)(address - 4);					// previous
+	*(address + size + 8)	= (uint32_t)(*address);							// next
+	*(address + size + 12) = allocated ? MAGICALLOCATED : 0;	// allocated
+	*address = (uint32_t)(address + size +8);									// prior header 
+}
+
+// Create the first header
+void createInitialHeader(uint32_t *address) {
+	*(address - 4) = 0;
+	*address = 0;
+	*(address + 4) = 0;
+}
+
 
 /*
  * Copyright (c) 2012 Ischus Limited www.ischus.com

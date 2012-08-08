@@ -1,26 +1,19 @@
 /*
- * asmStart.h
+ * morseAscii.h
  *
  */
  
-#ifndef _H_ASMSTART
-#define _H_ASMSTART
+#ifndef _H_MORSEASCII
+#define _H_MORSEASCII
 
 #include <stdint.h>
 
-extern void WriteToMemory32 (unsigned int, unsigned int);
-extern unsigned int ReadFromMemory32 (unsigned int);
-extern void MemoryBarrier (void);
-extern void DataMemoryBarrier (void);
-extern void DataSynchronisationBarrier (void);
-extern void SmallDelay (unsigned int);
-extern void VoidCall (void);
-extern uint32_t FramebufferMemory;
-extern uint32_t LinuxMachineType;
-extern uint32_t AtagsAddress;
-extern uint32_t EndFrameBuffer;
-extern uint32_t FreeMemoryStart;
-extern uint32_t __bss_end__;
+extern uint32_t digit1;
+extern uint32_t digit2;
+extern uint32_t digit3;
+extern uint32_t digit4;
+extern uint32_t digit5;
+extern uint32_t digit6;
 
 #endif
 

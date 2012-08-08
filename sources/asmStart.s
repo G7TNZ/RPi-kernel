@@ -1,5 +1,5 @@
 #
-# vectors.s
+# asmStart.s
 #  startup and other assembler functions.
 #
 #
@@ -30,7 +30,7 @@ start_asm:
 		bl			DataSynchronisationBarrier
 
 		# go for the c-code now
-		bl			start_kernel
+		bl			start_main
 SafetyLoop:
 		b				SafetyLoop
 
@@ -88,15 +88,15 @@ exc_stack:
 supervisor_sp:
 .space			4
 
-.data
+.bss
 .p2align 4
 .global FramebufferMemory
 FramebufferMemory:
-.space			0x400, 00 			@ 100 words of 4 bytes
+.space			0x400 			@ 100 words of 4 bytes
 
 .global EndFrameBuffer
 EndFrameBuffer:
-.space			4, 0xAA
+.space			4
 
 .global LinuxMachineType
 LinuxMachineType:
@@ -104,10 +104,6 @@ LinuxMachineType:
 
 .global AtagsAddress
 AtagsAddress:
-.word			00000000
-
-.global FreeMemoryStart
-FreeMemoryStart:
 .word			00000000
 
 .end
