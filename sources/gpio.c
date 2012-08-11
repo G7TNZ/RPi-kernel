@@ -38,10 +38,13 @@ void Gpio_SetPinDirection(int pin, bool input) {
 			address = GPFSEL5;
 			break;
 	}
+	MemoryBarrier();
+	DataCacheFlush();
 	unsigned int data  = ReadFromMemory32(address + ARM_PHYSICAL_IO_BASE);
 	data &= ~(FSEL_MASK << (pin * 3));
 	data |= (input ? FSEL_INPUT : FSEL_OUTPUT) << (pin * 3);
 	WriteToMemory32(data, address + ARM_PHYSICAL_IO_BASE);	
+	MemoryBarrier();
 }
  
 bool Gpio_Read(uint32_t pin) {
@@ -51,6 +54,9 @@ bool Gpio_Read(uint32_t pin) {
 	} else {
 		address = GPLEV1;
 	}
+	MemoryBarrier();
+	DataCacheFlush();
+	MemoryBarrier();
 	uint32_t result = ReadFromMemory32(address + ARM_PHYSICAL_IO_BASE);
 	
 	return (result & (1 << (pin % 32)))? true : false;
@@ -71,7 +77,10 @@ void Gpio_Write(uint32_t pin, bool setToOne) {
 			address = GPCLR1;
 		}
 	}
+	MemoryBarrier();
+	DataCacheFlush();
 	WriteToMemory32(1 << (pin % 32), address + ARM_PHYSICAL_IO_BASE);
+	MemoryBarrier();
 }
 
 void Gpio_FlashPin(int pin, int pattern, bool endWord, bool positiveLogic) {
@@ -93,12 +102,15 @@ void Gpio_FlashPin(int pin, int pattern, bool endWord, bool positiveLogic) {
 	uint32_t offAddress = positiveLogic ? clrAddress : setAddress;
   uint32_t data = 1 << (pin % 32);
   
+	MemoryBarrier();
+	DataCacheFlush();
 	for(int i = numberOfBits-1; i >= 0 ; i--) {
 		WriteToMemory32(data, onAddress + ARM_PHYSICAL_IO_BASE);
 		CheckBit(code, i) ? Gpio_DashDelay() : Gpio_DotDelay();
 		WriteToMemory32(data, offAddress + ARM_PHYSICAL_IO_BASE);
 		if (i != 0) Gpio_DotDelay();
 	}
+	MemoryBarrier();
 	endWord ? Gpio_WordSpace() : Gpio_LetterSpace();
 }
 

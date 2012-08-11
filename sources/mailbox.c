@@ -8,7 +8,10 @@
 #include "headers/asmStart.h"
  
 uint32_t MailboxStatus() {
+	MemoryBarrier();
+	DataCacheFlush();
 	return ReadFromMemory32(MailboxAddress(MAILBOX0, MAILBOX_STATUS));
+	MemoryBarrier();
 }
 
 uint32_t MailboxRead(uint32_t mailboxID) {
@@ -17,11 +20,13 @@ uint32_t MailboxRead(uint32_t mailboxID) {
 
 uint32_t MailboxReadWithChannel(uint32_t mailboxNumber, uint32_t mailboxID) {
 	uint32_t readValue = 0;
+	MemoryBarrier();
+	DataCacheFlush();
 	do {
 		while (0 != (MailboxStatus() & MAILBOX_EMPTY));
-		DataSynchronisationBarrier();
 		readValue = ReadFromMemory32(MailboxAddress(mailboxNumber, MAILBOX_READ ));
 	} while ((readValue & MASK_MAILBOX_CHANNEL) != (mailboxID & MASK_MAILBOX_CHANNEL));
+	MemoryBarrier();
 	
 	return ((readValue & MASK_MAILBOX_DATA) >> 4);
 }
@@ -31,10 +36,11 @@ void MailboxWrite(uint32_t value, uint32_t mailboxid) {
 }
 
 void MailboxWriteWithChannel(uint32_t value, uint32_t mailboxNumber, uint32_t mailboxid) {
-	DataSynchronisationBarrier();
+	MemoryBarrier();
+	DataCacheFlush();
 	while (0 != (MailboxStatus() & MAILBOX_FULL));
 	WriteToMemory32((value << 4) | (mailboxid & MASK_MAILBOX_CHANNEL), MailboxAddress(mailboxNumber, MAILBOX_WRITE));
-	DataSynchronisationBarrier();
+	MemoryBarrier();
 }
 
 /*

@@ -20,6 +20,7 @@ void Fb_SetCursorPosition(int x_position, int y_position);
 void Fb_WriteCharacter(unsigned char putCharacter);
 void Fb_WriteString(const char * putString);
 void Fb_WriteNewLine(void);
+void Fb_WriteLine(const char * putString);
 struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
 
 enum FB_MODE {

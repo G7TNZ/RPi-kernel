@@ -13,6 +13,9 @@
 #include "headers/colourStructure.h"
 #include "headers/console.h"
 #include "headers/atags.h"
+#include "headers/general.h"
+
+#include "headers/standardFont.h"
 
 void WriteCmdLineStrings(char* atags);
 
@@ -21,12 +24,14 @@ int start_main(void) {
 	Gpio_SetMorse(36, true);
 	Gpio_WordSpace();
 	
-	Atags_Init();
+	Gpio_SetMorse(1, false);
 	
 	Gpio_SetPinDirection(RPI_STATUS, OUTPUT);
 	SmallDelay(5);
 	Gpio_Write(RPI_STATUS, SET);		// Setting turns LED off.
 	Gpio_DashDelay();
+	
+//	Atags_Init();
 	
 	int result;
 	int mode = MODE1024X768X24;
@@ -46,10 +51,16 @@ int start_main(void) {
 	Fb_SetForegroundColour(colour);
 	
 	char putString[] = "Hello World!\n\r\n\rReady> ";
-	Fb_WriteString(putString);
+	Fb_WriteLine(putString);
 	char decimalString[10];
-	Fb_WriteString(Gpio_ConvertToDecimalString(bootParameters.machineType, decimalString));
-	Fb_WriteNewLine();
+	Fb_WriteString("*        __bss_end__: ");
+	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(&__bss_end__), decimalString, 8));
+
+	uint32_t* dynamicAllocation = AllocateMemory(0x10);
+	
+	Fb_WriteString("*  dynamicAllocation: ");
+	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)dynamicAllocation, decimalString, 8));
+	Console_WriteMemoryBlockHex((uint32_t) (&__bss_end__), (uint32_t) ((&__bss_end__) + 0x30));
 			
 	Gpio_SetMorse(1, false);
 	Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
@@ -84,6 +95,6 @@ int start_main(void) {
  * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */

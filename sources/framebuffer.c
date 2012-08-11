@@ -118,10 +118,8 @@ int InitFb(int mode) {
 	frameBuffer->pointer = 0;
 	frameBuffer->size = 0;
 
-	DataSynchronisationBarrier();
 	MailboxWrite(((uint32_t)ArmPhysicalToVcMemoryL2((void*)frameBuffer) >> 4), CHANNEL_FB);
 	uint32_t valueRead = MailboxRead(CHANNEL_FB);
-	DataSynchronisationBarrier();
 	
 	frameBufferInfo->width = frameBuffer->width;
 	frameBufferInfo->height = frameBuffer->height;
@@ -166,6 +164,11 @@ void Fb_WriteCharacterInFont(unsigned char putCharacter, char* characterFont) {
 }
 
 void Fb_WriteNewLine(void) {
+	Fb_WriteString("\n\r");
+}
+
+void Fb_WriteLine(const char * putString) {
+	Fb_WriteString(putString);
 	Fb_WriteString("\n\r");
 }
 
@@ -234,7 +237,6 @@ void Fb_WriteCharacter(unsigned char putCharacter) {
 }
 
 void Fb_ClearScreen(void) {
-	DataSynchronisationBarrier();
 	for (unsigned int i = 0; i < frameBufferInfo->size; i++) {
 		switch(i % 3) {
 			// assumes 24 bit mode.
@@ -281,7 +283,6 @@ void MoveScreenUpOneLine(void) {
 	unsigned int destination;
 	unsigned int source;
 	unsigned int offset = (frameBufferInfo->pitch * ((frameBufferInfo->fontArrays[currentFont]).height + 1));
-	DataSynchronisationBarrier();
 	for(destination = 0; destination < (frameBufferInfo->size - offset); destination++) {
 		source = destination + offset;
 		frameBufferInfo->framebuffer[destination] = frameBufferInfo->framebuffer[source];
@@ -290,7 +291,6 @@ void MoveScreenUpOneLine(void) {
 }
 
 void ClearBottomLineToBackground(void) {
-	DataSynchronisationBarrier();
 	for (unsigned int i = (frameBufferInfo->size - (frameBufferInfo->pitch * (frameBufferInfo->fontArrays[currentFont].height+2))); i <= frameBufferInfo->size; i++) {
 		switch(i % 3) {
 			// assumes 24 bit mode.
@@ -308,7 +308,6 @@ void WriteCharacter(unsigned char putCharacter) {
 	uint32_t rowPattern;
 	int position = 0;
 	int base_position = (frameBufferInfo->cursor_y * frameBufferInfo->pitch) + frameBufferInfo->cursor_x ; 
-	DataSynchronisationBarrier();
 	for (int row = 0; row < frameBufferInfo->fontArrays[currentFont].height; row++) {
 		rowPattern = frameBufferInfo->fontArrays[currentFont]
 									.map[((putCharacter - ((frameBufferInfo->fontArrays[currentFont]).start))
@@ -338,7 +337,6 @@ void CheckPosition(void) {
 	}
 }
 void WriteCharacterRow(int position, uint32_t pattern, int size) {
-	DataSynchronisationBarrier();
 	for(int i = size-1; i >= 0; i--) {
 		if (CheckBit(pattern, i)) {
 			frameBufferInfo->framebuffer[position++] = currentForegroundColour.red;

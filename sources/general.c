@@ -7,14 +7,18 @@
  #include "headers/general.h"
  #include "headers/gpio.h"
  #include "headers/asmStart.h"
+ #include "headers/framebuffer.h"
+ 
+ #include "headers/console.h"
  
 /*
  * Local prototypes
  *
  */
 
-void createHeader(uint32_t *address, uint32_t size, uint32_t allocated);
+void createHeader(uint32_t *address, uint32_t size);
 void createInitialHeader(uint32_t *address);
+
 /*
  * Public methods
  *
@@ -46,37 +50,49 @@ void __div0(void) {
 
 // Dynamic allocation of memory
 bool isInitialised = false;
-#define MAGICALLOCATED 0x3a5fe82b
+#define MAGICALLOCATED 0x44414D66								// Dynamically Allocated Memory flag - 'DAMf'
 uint32_t* AllocateMemory(uint32_t size) {
-	uint32_t* headerNextPointer = &FreeMemoryStart + 4;
+	uint32_t* headerNextPointer = &__bss_end__ + 1;
 	
-	if (0 == size) return (uint32_t*) 0x80000000;	// cause exception if used?
+	if (0 == size) return (uint32_t*) 0x80000000;	// deliberately cause exception if used
 	if(!isInitialised) {
 		createInitialHeader(headerNextPointer);
 	}
 	
+	char decimalString[10];
+	Fb_WriteString("*  headerNextPointer: ");
+	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(headerNextPointer), decimalString, 8));
+	Fb_WriteString("* *headerNextPointer: ");
+	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(*headerNextPointer), decimalString, 8));
+
+	Console_WriteMemoryBlockHex((uint32_t)&__bss_end__, (uint32_t)(&__bss_end__ + 0x60) );
+ 
 	bool isFound = false;
-	while ((0 != *headerNextPointer) && !isFound) {	// not at end of list or finished
-		if (0 == *(headerNextPointer+4)) { 						// not allocated
-			uint32_t sizeOfFreeSpace = (*headerNextPointer - (uint32_t)(headerNextPointer) -8);
-			if (size <= sizeOfFreeSpace) { 							// There is space here
+	while ((0 != *headerNextPointer) && !isFound) {				// not at end of list or finished
+		if (0 == *(headerNextPointer+1)) { 									// not allocated
+			uint32_t sizeOfFreeSpace = (*headerNextPointer - (uint32_t)(headerNextPointer) - 2);
+			if (size <= sizeOfFreeSpace) { 										// There is space here
 				isFound = true;
-				if ((size - sizeOfFreeSpace) >= 0x10) {		// Insert new header: more than is needed
-					createHeader(headerNextPointer, size, false);
+				if ((size - sizeOfFreeSpace) >= 0x4) {					// Insert new header: we have more than is needed
+					createHeader(headerNextPointer, size);
 				} 
 			}
 			headerNextPointer = (uint32_t*)(*headerNextPointer);
 		}
-		if (!isFound) { 															// At the last header without finding space
-			createHeader(headerNextPointer, size, false);
-		}
 	}
-	return (headerNextPointer + 8);
+	
+	Fb_WriteString("*        __bss_end__: ");
+	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(&__bss_end__), decimalString, 8));
+
+	if (!isFound) { 															// At the last header without finding space
+		createHeader(headerNextPointer, size);
+	}
+	return (headerNextPointer + 2);
 }
 
 bool FreeAllocatedMemory(uint32_t* address) {
-	if (MAGICALLOCATED == *(address - 4)) {
-		*(address - 4) = 0;		
+	if (MAGICALLOCATED == *(address - 1)) {
+		*(address - 1) = 0;		
 	}
 
 	return true;
@@ -88,20 +104,20 @@ bool FreeAllocatedMemory(uint32_t* address) {
  */
 
 // Create a memory header
-void createHeader(uint32_t *address, uint32_t size, uint32_t allocated) {
-	*(address + size + 4)	= (uint32_t)(address - 4);					// previous
-	*(address + size + 8)	= (uint32_t)(*address);							// next
-	*(address + size + 12) = allocated ? MAGICALLOCATED : 0;	// allocated
-	*address = (uint32_t)(address + size +8);									// prior header 
+void createHeader(uint32_t *address, uint32_t size) {
+	*(address + size + 2)	= (uint32_t)(address - 1);				// previous
+	*(address + size + 3)	= (uint32_t)(*address);						// next
+	*(address + size + 4) = 0;															// allocated
+	*address = (uint32_t)(address + size + 2);							// prior header
+	*(address + 1) = MAGICALLOCATED;												// prior allocation. 
 }
 
 // Create the first header
 void createInitialHeader(uint32_t *address) {
-	*(address - 4) = 0;
+	*(address - 1) = 0;
 	*address = 0;
-	*(address + 4) = 0;
+	*(address + 1) = 0;
 }
-
 
 /*
  * Copyright (c) 2012 Ischus Limited www.ischus.com
@@ -119,7 +135,7 @@ void createInitialHeader(uint32_t *address) {
  * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
  

@@ -3,7 +3,7 @@
 
 COPS = -Wall -Werror -O2 -nostdlib -nostartfiles -ffreestanding -std=c99
 
-gcc : bin/kernel.hex SDcard/mjw_kernel.img
+gcc : bin/kernel.hex SDcard/kernel.img
 
 clean :
 	rm -f bin/*.o
@@ -56,8 +56,8 @@ bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/morseAscii.
 	ld bin/asmStart.o bin/armDivision.o bin/morseAscii.o bin/main.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/morse.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
 	objdump -D bin/kernel.elf > kernel.list
 
-SDcard/mjw_kernel.img : bin/kernel.elf
-	objcopy bin/kernel.elf -O binary SDcard/mjw_kernel.img
+SDcard/kernel.img : bin/kernel.elf
+	objcopy bin/kernel.elf -O binary SDcard/kernel.img
 
 bin/kernel.hex : bin/kernel.elf
 	objcopy bin/kernel.elf -O ihex bin/kernel.hex

@@ -21,6 +21,7 @@ void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
 		Fb_WriteCharacter(' ');
 		Fb_WriteString(Gpio_ConvertToHexString((int) atags[index], convertedNumber, 2));
 	}
+	Fb_WriteNewLine();
 }
 
 /*

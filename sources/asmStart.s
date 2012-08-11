@@ -14,7 +14,7 @@ start_asm:
 
 		mrs			r4, cpsr
 		bic			r4, r4, #0x1f						@ r4 has the mode cleared
-		# switch to supervisor mode
+		# ensure supervisor mode
 		orr			r3, r4, #0x13						@ or the supervisor mode in
 		msr			cpsr_c, r3							@ put into the right hand end cpsr
 		ldr			sp, =temp_stack
@@ -24,10 +24,6 @@ start_asm:
 		mov			ip, sp
 		push		{fp, ip, lr, pc}
 		sub			fp, ip, #4
-
-		# precautionary.
-		bl			DataMemoryBarrier
-		bl			DataSynchronisationBarrier
 
 		# go for the c-code now
 		bl			start_main
@@ -49,26 +45,30 @@ SmallDelay:
 loop:
 		subs		r0,r0,#0x00000001
 		bne			loop
-		bx			lr
+		mov			pc,lr
 
 .global VoidCall
 VoidCall:
-		bx			lr
-
-.global DataMemoryBarrier
-DataMemoryBarrier:
-		mov			r0, #0x0000
-		mcr			p15, 0, r0, c7, c10, 5
-		bx			lr
+		mov			pc,lr
 
 .global MemoryBarrier
 MemoryBarrier:
-		mcr			p15, 0, ip, c7, c5,  0		@ invalidate I cache
-		mcr			p15, 0, ip, c7, c5,  6		@ invalidate BTB
-		mcr			p15, 0, ip, c7, c10, 4		@ drain write buffer
-		mcr			p15, 0, ip, c7, c5,  4		@ prefetch flush
-		mov			pc, lr
+		mov			r0, #0x0000
+		mcr			p15, #0, r0, c7, c10, #5
+		mov			pc,lr
 
+.global SynchronisationBarrier
+SynchronisationBarrier:
+		mov			r0, #0x0000
+		mcr			p15, #0, r0, c7, c10, #4
+		mov			pc,lr
+		
+.global DataCacheFlush
+DataCacheFlush:
+		mov			r0, #0x0000
+		mcr			p15, #0, r0, c7, c14, #0
+		mov			pc,lr
+		
 .global DataSynchronisationBarrier
 DataSynchronisationBarrier:
 		stmfd		sp!,{r0-r8,r12,lr}				@ Store registers

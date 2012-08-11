@@ -11,7 +11,8 @@
 extern void WriteToMemory32 (unsigned int, unsigned int);
 extern unsigned int ReadFromMemory32 (unsigned int);
 extern void MemoryBarrier (void);
-extern void DataMemoryBarrier (void);
+extern void SynchronisationBarrier (void);
+extern void DataCacheFlush (void);
 extern void DataSynchronisationBarrier (void);
 extern void SmallDelay (unsigned int);
 extern void VoidCall (void);
@@ -19,7 +20,7 @@ extern uint32_t FramebufferMemory;
 extern uint32_t LinuxMachineType;
 extern uint32_t AtagsAddress;
 extern uint32_t EndFrameBuffer;
-extern uint32_t FreeMemoryStart;
+extern uint32_t _freeMemoryStart;
 extern uint32_t __bss_end__;
 
 #endif

@@ -10,9 +10,10 @@ SECTIONS
     .text : { *(.text*) } > ram
     .data : { *(.data*) } > ram
     .ARM.attributes : { *(.ARM.attributes*) } > ram
+    __comment__ = .;
     .comment : { *(.comment*) } > ram
     __bss_start__ = .;
     .bss : { *(.bss*) } > ram
     __bss_end__ = .;
-    FreeMemoryStart = .;
+    _freeMemoryStart = .;
 }
