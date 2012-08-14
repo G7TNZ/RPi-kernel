@@ -16,7 +16,7 @@ int codes [45][2] = {
 	{0b001111,5}, {0b000111,5}, {0b000011,5}, {0b000001,5}, {0b000000,5}, 	// 35 - 39
 	{0b010000,5}, {0b011000,5}, {0b011100,5}, {0b011110,5}, {0b011111,5} }; // 41 - 44
 
-uint32_t	ArmPhysicalToVcIO (void* ArmAddress) {
+uint32_t	ArmPhysicalToVcIO (void *ArmAddress) {
 	return	((uint32_t) ArmAddress) + 0x5E000000;
 }
 
@@ -24,7 +24,7 @@ void*			VcIOToArmPhysical (uint32_t ArmAddress) {
 	return	(void *)(ArmAddress - 0x5E000000);
 }
 
-uint32_t	ArmPhysicalToVcMemoryNoL2 (void* ArmAddress) {
+uint32_t	ArmPhysicalToVcMemoryNoL2 (void *ArmAddress) {
 	return	((uint32_t) ArmAddress) + 0xC0000000;
 }
 
@@ -32,7 +32,7 @@ void*			VcMemoryToArmPhysicalNoL2 (uint32_t ArmAddress) {
 	return	(void *)(ArmAddress - 0xC0000000);
 }
 
-uint32_t	ArmPhysicalToVcMemoryL2 (void* ArmAddress) {
+uint32_t	ArmPhysicalToVcMemoryL2 (void *ArmAddress) {
 	return	((uint32_t) ArmAddress) + 0x40000000;
 }
 

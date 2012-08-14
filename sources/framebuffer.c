@@ -19,7 +19,7 @@ struct FrameBufferInfo {
 	int height;
 	int pitch;													// pixels per line
 	int depth;													// bytes per pixel
-	volatile unsigned char* framebuffer;
+	volatile unsigned char *framebuffer;
 	int size;														// total number of bytes making up the screen.
 	int cursor_x;												// pixel distance down
 	int cursor_y;												// pixel distance across
@@ -45,7 +45,7 @@ struct Cursor {
 	int y;
 };
 
-struct FrameBufferInfo* frameBufferInfo;
+struct FrameBufferInfo *frameBufferInfo;
 int currentFont;
 struct ColourStructure currentForegroundColour;
 struct ColourStructure currentBackgroundColour;
@@ -60,7 +60,7 @@ void ClearBottomLineToBackground(void);
 // Public functions
 int InitFb(int mode) {
 	// framebuffer structure located where lower 4 bits are zero.
-	volatile struct FrameBuffer* frameBuffer = (volatile struct FrameBuffer*) &FramebufferMemory;
+	volatile struct FrameBuffer *frameBuffer = (volatile struct FrameBuffer*) &FramebufferMemory;
 	switch (mode) {
 		default:
 		case MODE640X480X16:
@@ -154,12 +154,12 @@ int InitFb(int mode) {
 	return 0;
 }
 
-void Fb_ChangeFont(char* newFont) {
+void Fb_ChangeFont(char *newFont) {
 	// compare string with elements and set to the index.
 	currentFont = 0; // default value.
 }
 
-void Fb_WriteCharacterInFont(unsigned char putCharacter, char* characterFont) {
+void Fb_WriteCharacterInFont(unsigned char putCharacter, char *characterFont) {
 
 }
 
@@ -167,12 +167,12 @@ void Fb_WriteNewLine(void) {
 	Fb_WriteString("\n\r");
 }
 
-void Fb_WriteLine(const char * putString) {
+void Fb_WriteLine(const char *putString) {
 	Fb_WriteString(putString);
 	Fb_WriteString("\n\r");
 }
 
-void Fb_WriteString(const char * putString) {
+void Fb_WriteString(const char *putString) {
 	int index = 0;
 	while (0 != putString[index]) {
 		Fb_WriteCharacter(putString[index++]);

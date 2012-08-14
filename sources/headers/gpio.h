@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include "generalIO.h"
+#include "types.h"
 
 #define GPIO_BASE 0x00200000
 
@@ -105,9 +106,9 @@ void	Gpio_DotDelay();
 void	Gpio_SetMorse(int speed, bool isSlow);
 int		Gpio_GetMorseSpeed();
 bool	Gpio_GetMorseIsSlow();
-void	Gpio_ReportNumber(const char* charString);
-char* Gpio_ConvertToHexString(uint32_t number, char* characters, int pack);
-char* Gpio_ConvertToDecimalString(uint32_t number, char* characters);
+void	Gpio_ReportNumber(const char *charString);
+char* Gpio_ConvertToHexString(uint32_t number, char *characters, int pack);
+char* Gpio_ConvertToDecimalString(uint32_t number, char *characters);
 
 #endif
 

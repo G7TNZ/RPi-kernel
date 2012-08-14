@@ -6,6 +6,7 @@
 #ifndef _H_FONTSTRUCTURE
 #define _H_FONTSTRUCTURE
 
+#include "types.h"
 
 struct FontStructure { 
 	char*	fontname;
@@ -13,7 +14,7 @@ struct FontStructure {
 	int		height;		// number of elements in the definitions
 	int		start;		// ASCII value of the first character defined
 	int		end;			// ASCII value of the last character defined
-	unsigned char*	map;
+	unsigned char *map;
 } ;
 
 #endif

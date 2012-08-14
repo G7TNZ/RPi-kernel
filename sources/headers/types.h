@@ -1,41 +1,15 @@
 /*
- * atags.h
+ * types.h
  *
  */
-
-#ifndef _H_ATAGS
-#define _H_ATAGS
-
-#include <stdint.h>
-#include "types.h"
-
-typedef struct {
-	char *key;
-	char *value;
-} CommandLineKeys;
-
-struct BootParameters {
-	uint32_t	machineType;
-	uint32_t	atagsAddress;
-	uint32_t	flags;
-	uint32_t	pageSize;
-	uint32_t	rootDevice;
-	uint32_t	memorySize;
-	uint32_t	memoryStart;
-	int				dmaChannnels;
-	int				fbWidth;
-	int				fbHeight;
-	int				fbDepth;
-	char			macAddress[18];
-	uint32_t	serialNumber;
-	uint32_t	boardRevision;
-	CommandLineKeys *commandLineParameters;	
-} bootParameters;
-
-struct bootParameters;
-
-void Atags_Init(void);
  
+#ifndef _H_TYPES
+#define _H_TYPES
+
+typedef int bool;
+#define true 1
+#define false 0
+
 #endif
 
 /*
@@ -57,3 +31,4 @@ void Atags_Init(void);
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+

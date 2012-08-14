@@ -4,6 +4,7 @@
 #
 #
 .text
+.code 32
 
 .global start_asm
 start_asm:
@@ -14,31 +15,77 @@ start_asm:
 
 		mrs			r4, cpsr
 		bic			r4, r4, #0x1f						@ r4 has the mode cleared
+
+		# initialize Stack pointer for exception modes
+		mrs			r4, cpsr
+		bic			r4, r4, #0x1f
+
+		#FIQ Mode
+		orr			r3, r4, #0x11
+		msr			cpsr_c, r3
+		ldr			sp, =exc_stack
+
+		#IRQ Mode
+		orr			r3, r4, #0x12
+		msr			cpsr_c, r3
+		ldr			sp, =exc_stack
+
+		#ABORT Mode
+		orr			r3, r4, #0x17
+		msr			cpsr_c, r3
+		ldr			sp, =exc_stack
+		mov			r0, #0x0000
+		ldr			r1, =AbortInterrupt
+		str			r1, [r0, #0x0010]
+		str			r1, [r0, #0x000C]
+	
+		#UNDEFINED Mode
+		orr			r3, r4, #0x1b
+		msr			cpsr_c, r3
+		ldr			sp, =exc_stack
+		ldr			r1, =UndefInterrupt
+		str			r1, [r0, #0x0004]
+
 		# ensure supervisor mode
 		orr			r3, r4, #0x13						@ or the supervisor mode in
 		msr			cpsr_c, r3							@ put into the right hand end cpsr
 		ldr			sp, =temp_stack
 
-		#Create the first stack frame
+ 		#Create the first stack frame
 		mov			fp, #0x00
 		mov			ip, sp
 		push		{fp, ip, lr, pc}
 		sub			fp, ip, #4
+		
+#		bl			ZeroBssMemory
 
 		# go for the c-code now
 		bl			start_main
 SafetyLoop:
 		b				SafetyLoop
+		
+ZeroBssMemory:
+		ldr			r0, =__bss_start__
+		ldr			r1, =__bss_end__
+		sub			r2, r1, r0
+		bl			bzero
+		mov			pc,lr
+
+#1:
+#		str			r0, [r1]!
+#		cmp			r2, r1
+#		bne			1b 
+#		mov			pc,lr
 
 .global WriteToMemory32
 WriteToMemory32:
 		str			r0,[r1]
-		bx			lr
+		mov			pc,lr
 
 .global ReadFromMemory32
 ReadFromMemory32:
 		ldr			r0,[r0]
-		bx			lr 
+		mov			pc,lr
 
 .global SmallDelay
 SmallDelay:
@@ -77,6 +124,16 @@ DataSynchronisationBarrier:
 		mcr			p15, 0, ip, c7, c10, 4		@ drain write buffer
 		mcr			p15, 0, ip, c7, c10, 4		@ prefetch flush
 		ldmfd		sp!,{r0-r8,r12,pc}				@ restore registers	 and return
+		
+UndefInterrupt:
+# allows handling to be added
+		bl			undefinedError
+		mov			pc, lr
+
+AbortInterrupt:
+# allows handling to be added
+		bl			abortError
+		mov			pc, lr
 
 .space			0x100
 temp_stack:

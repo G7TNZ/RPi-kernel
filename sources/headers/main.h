@@ -6,6 +6,8 @@
 #ifndef _H_MAIN
 #define _H_MAIN
 
+#include "types.h"
+
 #endif
 
 /*

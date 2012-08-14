@@ -6,7 +6,7 @@
 #ifndef _H_MORSE
 #define _H_MORSE
 
-
+#include "types.h"
 
 #endif
 

@@ -6,6 +6,8 @@
 #ifndef _H_GENERALIO
 #define _H_GENERALIO
 
+#include "types.h"
+
 // Base addresses 
 #define ARM_PHYSICAL_IO_BASE	0x20000000	// Raw
 #define ARM_VIRTUAL_IO_BASE		0xF2000000	// ARM MMU mapped
@@ -99,13 +101,9 @@
 #define PATTERN_LLLLL		44	//0
 #define PAT_0						44
 
-typedef int bool;
-#define true 1
-#define false 0
-
-uint32_t	ArmPhysicalToVcIO(void* ArmAddress);
-uint32_t	ArmPhysicalToVcMemoryNoL2(void* ArmAddress);
-uint32_t	ArmPhysicalToVcMemoryL2(void* ArmAddress);
+uint32_t	ArmPhysicalToVcIO(void *ArmAddress);
+uint32_t	ArmPhysicalToVcMemoryNoL2(void *ArmAddress);
+uint32_t	ArmPhysicalToVcMemoryL2(void *ArmAddress);
 void*			VcMemoryToArmPhysicalNoL2(uint32_t ArmAddress);
 void*			VcMemoryToArmPhysicalL2(uint32_t ArmAddress);
 

@@ -1,5 +1,5 @@
 /*
- * gpio.h
+ * spi.h
  *
  */
  
@@ -7,6 +7,7 @@
 #define _H_GPIO
 
 #include "generalIO.h"
+#include "types.h"
 
 // SPI
 #define RPI_MOSI_P19		10	; MOSI

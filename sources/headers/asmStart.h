@@ -7,6 +7,7 @@
 #define _H_ASMSTART
 
 #include <stdint.h>
+#include "types.h"
 
 extern void WriteToMemory32 (unsigned int, unsigned int);
 extern unsigned int ReadFromMemory32 (unsigned int);
@@ -21,6 +22,7 @@ extern uint32_t LinuxMachineType;
 extern uint32_t AtagsAddress;
 extern uint32_t EndFrameBuffer;
 extern uint32_t _freeMemoryStart;
+extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * gpio.h
+ * i2c.h
  *
  */
  
@@ -7,6 +7,7 @@
 #define _H_GPIO
 
 #include "generalIO.h"
+#include "types.h"
 
 // I2C
 #define RPI_SDA0_P3			0		; SDA

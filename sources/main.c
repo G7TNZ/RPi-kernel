@@ -17,10 +17,12 @@
 
 #include "headers/standardFont.h"
 
-void WriteCmdLineStrings(char* atags);
+void WriteCmdLineStrings(char *atags);
 
 int start_main(void) {
-	
+
+	GeneralInitialise();
+
 	Gpio_SetMorse(36, true);
 	Gpio_WordSpace();
 	
@@ -31,6 +33,7 @@ int start_main(void) {
 	Gpio_Write(RPI_STATUS, SET);		// Setting turns LED off.
 	Gpio_DashDelay();
 	
+	Gpio_FlashStatusLed(PAT_H, END_OF_WORD);
 //	Atags_Init();
 	
 	int result;
@@ -52,15 +55,6 @@ int start_main(void) {
 	
 	char putString[] = "Hello World!\n\r\n\rReady> ";
 	Fb_WriteLine(putString);
-	char decimalString[10];
-	Fb_WriteString("*        __bss_end__: ");
-	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(&__bss_end__), decimalString, 8));
-
-	uint32_t* dynamicAllocation = AllocateMemory(0x10);
-	
-	Fb_WriteString("*  dynamicAllocation: ");
-	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)dynamicAllocation, decimalString, 8));
-	Console_WriteMemoryBlockHex((uint32_t) (&__bss_end__), (uint32_t) ((&__bss_end__) + 0x30));
 			
 	Gpio_SetMorse(1, false);
 	Gpio_FlashStatusLed(PAT_V, END_OF_WORD);

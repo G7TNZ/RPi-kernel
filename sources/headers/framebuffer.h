@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include "colourStructure.h"
+#include "types.h"
 
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 10
@@ -18,9 +19,9 @@ void Fb_SetForegroundColour(struct ColourStructure colour);
 void Fb_SetBackgroundColour(struct ColourStructure colour);
 void Fb_SetCursorPosition(int x_position, int y_position);
 void Fb_WriteCharacter(unsigned char putCharacter);
-void Fb_WriteString(const char * putString);
+void Fb_WriteString(const char *putString);
 void Fb_WriteNewLine(void);
-void Fb_WriteLine(const char * putString);
+void Fb_WriteLine(const char *putString);
 struct Cursor Fb_GetCursorPosition(struct Cursor cursor);
 
 enum FB_MODE {

@@ -22,6 +22,9 @@ bin/armDivision.o : sources/armDivision.s
 bin/morseAscii.o : sources/morseAscii.s
 	as sources/morseAscii.s -o bin/morseAscii.o
 
+bin/memset.o : sources/memset.s
+	as sources/memset.s -o bin/memset.o
+
 bin/main.o : sources/main.c
 	gcc $(COPS) -c sources/main.c -o bin/main.o
 
@@ -52,8 +55,8 @@ bin/general.o : sources/general.c
 bin/standardFont.o : sources/standardFont.c
 	gcc $(COPS) -c sources/standardFont.c -o bin/standardFont.o
 
-bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/morseAscii.o bin/main.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/morse.o bin/generalIO.o bin/general.o bin/standardFont.o
-	ld bin/asmStart.o bin/armDivision.o bin/morseAscii.o bin/main.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/morse.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
+bin/kernel.elf : sources/memmap bin/asmStart.o bin/armDivision.o bin/morseAscii.o bin/memset.o bin/main.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/atags.o bin/morse.o bin/generalIO.o bin/general.o bin/standardFont.o
+	ld bin/asmStart.o bin/armDivision.o bin/morseAscii.o bin/memset.o bin/main.o bin/framebuffer.o bin/mailbox.o bin/gpio.o bin/console.o bin/morse.o bin/atags.o bin/generalIO.o bin/general.o bin/standardFont.o -T sources/memmap -o bin/kernel.elf
 	objdump -D bin/kernel.elf > kernel.list
 
 SDcard/kernel.img : bin/kernel.elf

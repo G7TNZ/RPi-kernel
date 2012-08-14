@@ -1,5 +1,5 @@
 /*
- * gpio.h
+ * miniuart.h
  *
  */
  
@@ -7,6 +7,7 @@
 #define _H_GPIO
 
 #include "generalIO.h"
+#include "types.h"
 
 // Mini UART
 #define RPI_TXD0_P8			14	; Transmit

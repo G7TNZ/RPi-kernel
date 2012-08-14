@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include "generalIO.h"
+#include "types.h"
 
 #define MAILBOX_BASE		0x0000B880 
 

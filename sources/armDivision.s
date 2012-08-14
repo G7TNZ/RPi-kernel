@@ -7,6 +7,8 @@
  *  to handle divide by zero.
  *
  */
+.text
+.code 32
 
 .macro ARM_DIV_BODY dividend, divisor, result, curbit
 		clz			\curbit, \divisor
@@ -181,8 +183,10 @@ __modsi3:
 Ldiv0:
 		str			lr, [sp, #-8]!
 		bl			__div0
-		mov			r0, #0						@ About as wrong as it could be.
+		mov			r0, #0
 		ldr			pc, [sp], #8
+
+.end
 
 /*
  * Modified July 2012 by Ischus (www.ischus.com), for Raspberry Pi bare metal,

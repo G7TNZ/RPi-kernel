@@ -7,11 +7,15 @@
 #define _H_GENERAL
 
 #include <stdint.h>
+#include "types.h"
 
 #define CheckBit(var, pos) ((var) & (1 << (pos)))
 
-int string_length(const char* str);
+int string_length(const char *str);
 uint32_t* AllocateMemory(uint32_t size);
+bool FreeAllocatedMemory(uint32_t *address);
+
+void GeneralInitialise(void);
 
 #endif
 

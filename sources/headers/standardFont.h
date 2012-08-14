@@ -6,6 +6,8 @@
 #ifndef _H_STANDARDFONT
 #define _H_STANDARDFONT
 
+#include "types.h"
+
 extern struct FontStructure standardFont;
 void StandardFontInitialise(void);
 unsigned char standardFontPixelDefinitions[1792];

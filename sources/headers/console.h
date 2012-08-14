@@ -6,6 +6,8 @@
 #ifndef _H_CONSOLE
 #define _H_CONSOLE
 
+#include "types.h"
+
 void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end);
  
  

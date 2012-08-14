@@ -7,6 +7,7 @@
 #define _H_MORSEASCII
 
 #include <stdint.h>
+#include "types.h"
 
 extern uint32_t digit1;
 extern uint32_t digit2;

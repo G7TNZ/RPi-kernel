@@ -7,6 +7,7 @@
 #define _H_ATAGSTRUCTURES
 
 #include <stdint.h>
+#include "types.h"
 
 typedef struct {
 	uint32_t	flags;
