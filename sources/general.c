@@ -3,34 +3,22 @@
  *
  */
  
- #include <stdint.h>
- #include "headers/general.h"
- #include "headers/gpio.h"
- #include "headers/asmStart.h"
- #include "headers/framebuffer.h"
- 
- #include "headers/console.h"
- 
-/*
- * Local prototypes
- *
- */
+#include <stdint.h>
+#include "headers/general.h"
+#include "headers/gpio.h"
+#include "headers/allocateMemory.h"
 
-void createHeader(uint32_t *address, uint32_t size);
-void createInitialHeader(uint32_t *address);
-void concatenateFreeBlocks(uint32_t *address);
-
+#include "headers/console.h"
+ 
 /*
  * Public methods
  *
  */
  
-int string_length(const char *str) {
-	const char *s = str;
-	while(*s) ++s;
-	return s-str;
+//until bss is zeroed.
+void GeneralInitialise(void) {
+	isInitialised = false;
 }
-
 
 // provides the error notification for the divide functions
 void __div0(void) {
@@ -81,94 +69,6 @@ void abortError(void) {
 	Gpio_FlashStatusLed(PAT_R, END_OF_LETTER);
 	Gpio_FlashStatusLed(PAT_O, END_OF_LETTER);
 	Gpio_FlashStatusLed(PAT_R, END_OF_WORD);
-}
-
-// Dynamic allocation of memory
-bool isInitialised;
-#define MAGICALLOCATED 0x44414D66								// Dynamically Allocated Memory flag - 'DAMf'
-
-//until bss is zeroed.
-void GeneralInitialise(void) {
-	isInitialised = false;
-}
-
-/*
- * Allocate 'size' words and return the pointer to the start.
- *
- */
-uint32_t* AllocateMemory(uint32_t size) {
-	uint32_t* headerNextPointer = &__bss_end__ + 1;
-	
-	if (0 == size) return (uint32_t*) 0x80000000;	// deliberately cause exception if used
-	
-	if(!isInitialised) {
-		createInitialHeader(headerNextPointer);
-		isInitialised = true;
-	}
-	
-	bool isFound = false;
-	while ((0 != *headerNextPointer) && !isFound) {				// not at end of list or finished
-		if (0 == *(headerNextPointer+1)) { 									// not allocated
-			concatenateFreeBlocks(headerNextPointer);
-			uint32_t sizeOfFreeSpace = (*headerNextPointer - (uint32_t)(headerNextPointer) - 2);
-			if (size <= sizeOfFreeSpace) { 										// There is space here
-				isFound = true;
-				if ((size - sizeOfFreeSpace) >= 0x4) {					// Insert new header: we have more than is needed
-					// correct previous for next header
-					*((uint32_t*)(*headerNextPointer) - 1) = (uint32_t)(headerNextPointer + size + 2);
-					createHeader(headerNextPointer, size);
-				} 
-				break;
-			}
-		}
-		headerNextPointer = (uint32_t*)(*headerNextPointer);
-	}
-	
-	if (!isFound) { 															// At the last header without finding space
-		createHeader(headerNextPointer, size);
-	}
-	return (headerNextPointer + 2);
-}
-
-bool FreeAllocatedMemory(uint32_t* address) {
-	if (MAGICALLOCATED == *(address - 1)) {
-		*(address - 1) = 0;	
-		return true;	
-	}
-
-	return false;
-}
-
-/*
- * Local methods
- *
- */
-
-// Concatenate memory blocks if adjacent free areas
-void concatenateFreeBlocks(uint32_t *address) {
-	char hexString[10];
-	Fb_WriteString("f  (((uint32_t*)*address) + 1): ");
-	Fb_WriteLine(Gpio_ConvertToHexString((uint32_t)(((uint32_t*)*address) + 1), hexString, 8));
-
-	if (0 == *(((uint32_t*)*address) + 1)) {
-		*address = *((uint32_t*)(*address));
-		*((uint32_t*)(*((uint32_t*)(*address)))) = *((uint32_t*)(*address) - 1);
-	}
-}
-// Create a memory header
-void createHeader(uint32_t *address, uint32_t size) {
-	*(address + size + 2)	= (uint32_t)(address - 1);				// previous
-	*(address + size + 3)	= (uint32_t)(*address);						// next
-	*(address + size + 4) = 0;															// allocated
-	*address = (uint32_t)(address + size + 3);							// prior header
-	*(address + 1) = MAGICALLOCATED;												// prior allocation. 
-}
-
-// Create the first header
-void createInitialHeader(uint32_t *address) {
-	*(address - 1) = 0;
-	*address = 0;
-	*(address + 1) = 0;
 }
 
 /*

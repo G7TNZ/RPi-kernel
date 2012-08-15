@@ -1,18 +1,19 @@
 /*
- * general.h
+ * allocateMemory.h
  *
  */
  
-#ifndef _H_GENERAL
-#define _H_GENERAL
+#ifndef _H_ALLOCATEMEMORY
+#define _H_ALLOCATEMEMORY
 
 #include <stdint.h>
 #include "types.h"
 
-#define CheckBit(var, pos) ((var) & (1 << (pos)))
+// remove this line when BSS is zeroed
+bool isInitialised;
 
-int string_length(const char *str);
-void GeneralInitialise(void);
+uint32_t* AllocateMemory(uint32_t size);
+bool FreeAllocatedMemory(uint32_t *address);
 
 #endif
 

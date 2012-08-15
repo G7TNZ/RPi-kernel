@@ -9,6 +9,7 @@
 #include "headers/asmStart.h"
 #include "headers/atags.h"
 #include "headers/atagStructures.h"
+#include "headers/allocateMemory.h"
 
 #define clk(element) (element * sizeof(CommandLineKeys))
 

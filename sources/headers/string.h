@@ -1,18 +1,18 @@
 /*
- * general.h
+ * string.h
  *
  */
  
-#ifndef _H_GENERAL
-#define _H_GENERAL
+#ifndef _H_STRING
+#define _H_STRING
 
 #include <stdint.h>
+
 #include "types.h"
 
-#define CheckBit(var, pos) ((var) & (1 << (pos)))
-
-int string_length(const char *str);
-void GeneralInitialise(void);
+int		String_length(const char *str);
+char* String_ConvertToHexString(uint32_t number, char *characters, int pack);
+char* String_ConvertToDecimalString(uint32_t number, char *characters);
 
 #endif
 

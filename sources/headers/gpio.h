@@ -107,8 +107,6 @@ void	Gpio_SetMorse(int speed, bool isSlow);
 int		Gpio_GetMorseSpeed();
 bool	Gpio_GetMorseIsSlow();
 void	Gpio_ReportNumber(const char *charString);
-char* Gpio_ConvertToHexString(uint32_t number, char *characters, int pack);
-char* Gpio_ConvertToDecimalString(uint32_t number, char *characters);
 
 #endif
 

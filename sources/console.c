@@ -3,9 +3,10 @@
  *
  */
 
-#include "headers/framebuffer.h"
 #include "headers/console.h"
+#include "headers/framebuffer.h"
 #include "headers/gpio.h"
+#include "headers/string.h"
 
 void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
 	char convertedNumber[9];
@@ -13,13 +14,13 @@ void Console_WriteMemoryBlockHex(uint32_t start, uint32_t end) {
 	for (int index = 0; index < (end - start); index++) {
 		if (0 == (index % 16)) {
 			Fb_WriteString("\n\r");
-			Fb_WriteString(Gpio_ConvertToHexString(start+ index, convertedNumber, 4));
+			Fb_WriteString(String_ConvertToHexString(start+ index, convertedNumber, 4));
 			Fb_WriteString(":");
 		} else if (0 == (index % 8)) {
 			Fb_WriteCharacter(' ');
 		}
 		Fb_WriteCharacter(' ');
-		Fb_WriteString(Gpio_ConvertToHexString((int) atags[index], convertedNumber, 2));
+		Fb_WriteString(String_ConvertToHexString((int) atags[index], convertedNumber, 2));
 	}
 	Fb_WriteNewLine();
 }
