@@ -59,34 +59,19 @@ int start_main(void) {
 	Gpio_SetMorse(1, false);
 	Gpio_FlashStatusLed(PAT_V, END_OF_WORD);
 	
-// Start debug
+/* Start debug
 	
 	uint32_t* memory1 = AllocateMemory(0x10);
-	uint32_t* memory2 = AllocateMemory(0x10);
-	uint32_t* memory3 = AllocateMemory(0x10);
-	uint32_t* memory4 = AllocateMemory(0x10);
 	char hexString[9];
 	Fb_WriteString("memory1: ");
 	Fb_WriteLine(String_ConvertToHexString((uint32_t) memory1, hexString, 8));
-	Fb_WriteString("memory2: ");
-	Fb_WriteLine(String_ConvertToHexString((uint32_t) memory2, hexString, 8));
-	Fb_WriteString("memory3: ");
-	Fb_WriteLine(String_ConvertToHexString((uint32_t) memory3, hexString, 8));
-	Fb_WriteString("memory4: ");
-	Fb_WriteLine(String_ConvertToHexString((uint32_t) memory4, hexString, 8));
 	FreeAllocatedMemory(memory1);
-	FreeAllocatedMemory(memory2);
-	FreeAllocatedMemory(memory3);
-	uint32_t* memory5 = AllocateMemory(0x08);
-	Fb_WriteString("memory5: ");
-	Fb_WriteLine(String_ConvertToHexString((uint32_t) memory5, hexString, 8));
-	FreeAllocatedMemory(memory4);
-	FreeAllocatedMemory(memory5);
 	
-	Console_WriteMemoryBlockHex((uint32_t) &__bss_end__, (uint32_t) ((uint32_t*)(&__bss_end__) + 0x50));
+	Console_WriteMemoryBlockHex((uint32_t) &__bss_end__, (uint32_t) ((uint32_t*)(&__bss_end__) + 0x20));
 	
 // End debug
-	
+*/
+
 	Gpio_SetPinDirection(RPI_GPIO7_P7, INPUT);
 		int morseBit;
 		while(1) {

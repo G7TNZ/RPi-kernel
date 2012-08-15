@@ -42,7 +42,6 @@ uint32_t* AllocateMemory(uint32_t size) {
 	bool isFound = false;
 	while ((0 != *headerNextPointer) && !isFound) {				// not at end of list or finished
 		if (0 == *(headerNextPointer+1)) { 									// not allocated
-			concatenateFreeBlocks(headerNextPointer);
 			uint32_t sizeOfFreeSpace = (*headerNextPointer - (uint32_t)(headerNextPointer) - 2);
 			if (size <= sizeOfFreeSpace) { 										// There is space here
 				isFound = true;
@@ -65,10 +64,10 @@ uint32_t* AllocateMemory(uint32_t size) {
 
 bool FreeAllocatedMemory(uint32_t* address) {
 	if (MAGICALLOCATED == *(address - 1)) {
+		concatenateFreeBlocks(address);
 		*(address - 1) = 0;	
 		return true;	
 	}
-
 	return false;
 }
 
@@ -79,12 +78,17 @@ bool FreeAllocatedMemory(uint32_t* address) {
 
 // Concatenate memory blocks if adjacent free areas
 void concatenateFreeBlocks(uint32_t *address) {
-
-	while (0 == *(((uint32_t*)*address) + 1)) {
-		*address = *((uint32_t*)(*address));
-		*((uint32_t*)(*((uint32_t*)(*address)))) = *((uint32_t*)(*address) - 1);
+	while (0 == *(((uint32_t*)*address)) + 1) {
+		if(0 == *((uint32_t*)*address)) {
+			*address = 0;
+			break;
+		} else {
+			*address = *((uint32_t*)(*address));
+			*((uint32_t*)(*((uint32_t*)(*address)))) = *((uint32_t*)(*address) - 1);
+		}
 	}
 }
+
 // Create a memory header
 void createHeader(uint32_t *address, uint32_t size) {
 	*(address + size + 2)	= (uint32_t)(address - 1);				// previous

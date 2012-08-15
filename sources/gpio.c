@@ -57,8 +57,8 @@ bool Gpio_Read(uint32_t pin) {
 	}
 	MemoryBarrier();
 	DataCacheFlush();
-	MemoryBarrier();
 	uint32_t result = ReadFromMemory32(address + ARM_PHYSICAL_IO_BASE);
+	MemoryBarrier();
 	
 	return (result & (1 << (pin % 32)))? true : false;
 }
